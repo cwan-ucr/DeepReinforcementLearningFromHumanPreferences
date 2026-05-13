@@ -118,76 +118,240 @@ class HumanPreference(object):
         self.trijectories.append([trijectory_env_name, trijectory])
 
     def ask_human(self):
+        """
+        Side-by-side trajectory playback in ONE OpenCV window (no Gym human windows).
+
+        Overlay (per side):
+        - elapsed time + step
+        - cumulative reward
+        - current action
+        - DONE/RESET indicator
+
+        Keys:
+        1 -> prefer LEFT
+        2 -> prefer RIGHT
+        3 or 0 -> neutral
+        SPACE -> pause/resume
+        n -> single-step (only when paused)
+        q or ESC -> quit without saving
+        """
+        import time
 
         if len(self.trijectories) < 2:
             return
 
-        r = np.asarray(range(len(self.trijectories)))
+        # pick two trajectories (random)
+        r = np.arange(len(self.trijectories))
         np.random.shuffle(r)
         t = [self.trijectories[r[0]], self.trijectories[r[1]]]
 
+        def unwrap_frame(frame):
+            # gym/gymnasium may return a list of frames
+            if isinstance(frame, list):
+                return frame[-1] if len(frame) > 0 else None
+            return frame
+
+        def put_text(img, text, org, scale=0.7, color=(255, 255, 255), outline=(0, 0, 0), thickness=2):
+            # Draw outline then main text (works on any background)
+            cv2.putText(img, text, org, cv2.FONT_HERSHEY_SIMPLEX, scale, outline, thickness + 2, cv2.LINE_AA)
+            cv2.putText(img, text, org, cv2.FONT_HERSHEY_SIMPLEX, scale, color, thickness, cv2.LINE_AA)
+
         envs = []
-        for i in range(len(t)):
-            env_name, trijectory = t[i]
-            env = gym.make(env_name)
-            env.reset()
-            env.render()
-            envs.append(env)
+        try:
+            # Create two envs in rgb_array mode (no Gym human windows)
+            for i in range(2):
+                env_name, _traj = t[i]
+                env = gym.make(env_name, render_mode="rgb_array")
+                _ = env.reset()  # gymnasium may return (obs, info)
+                envs.append(env)
 
-        cv2.imshow("", np.zeros([1, 1], dtype=np.uint8))
+            win_name = "Preference (1=left,2=right,3=neutral | space=pause n=step | q/esc=quit)"
+            cv2.namedWindow(win_name, cv2.WINDOW_NORMAL)
 
-        print("Preference (1,2|3):")
-        env_idxs = np.zeros([2], dtype=np.int32)
-        preference = -1
-        while True:
-            key = cv2.waitKey(1) & 0xFF
-            if key == ord('1'):
-                preference = 0
-            elif key == ord('2'):
-                preference = 1
-            elif key == ord('3') or key == ord('0'):
-                preference = 2
+            print("Preference (1,2|3). SPACE pause/resume, 'n' single-step, q/ESC quit (no save).")
+
+            env_idxs = np.zeros([2], dtype=np.int32)
+            preference = -1
+            quit_flag = False
+
+            # Overlay state
+            start_time = time.time()
+            paused = False
+            step_once = False
+
+            cum_rewards = [0.0, 0.0]
+            last_action = [None, None]
+            last_done_flag = [False, False]
+            reset_flash = [0, 0]  # show DONE/RESET for N frames after reset/done
+
+            delay_ms = 20
+
+            while True:
+                # ---- keyboard (always active) ----
+                key = cv2.waitKey(delay_ms) & 0xFF
+
+                if key == ord('1'):
+                    preference = 0
+                    break
+                elif key == ord('2'):
+                    preference = 1
+                    break
+                elif key == ord('3') or key == ord('0'):
+                    preference = 2
+                    break
+                elif key == ord('q') or key == 27:  # ESC
+                    quit_flag = True
+                    break
+                elif key == ord(' '):  # pause/resume
+                    paused = not paused
+                elif key == ord('n'):  # single-step (only when paused)
+                    if paused:
+                        step_once = True
+
+                # ---- step logic ----
+                do_step = (not paused) or step_once
+                if do_step:
+                    step_once = False
+
+                    for i in range(2):
+                        env_name, traj = t[i]
+
+                        # traj element format expected: (obs, future_obs, action, done)
+                        _obs, _future_obs, action, done_from_traj = traj[env_idxs[i]]
+                        last_action[i] = action
+
+                        # Step env (support both gym and gymnasium signatures)
+                        step_out = envs[i].step(action)
+                        if len(step_out) == 5:
+                            _o, reward, terminated, truncated, _info = step_out
+                            done_from_env = bool(terminated or truncated)
+                        else:
+                            _o, reward, done_from_env, _info = step_out
+                            done_from_env = bool(done_from_env)
+
+                        cum_rewards[i] += float(reward)
+                        env_idxs[i] += 1
+
+                        should_reset = (
+                            bool(done_from_traj) or bool(done_from_env) or env_idxs[i] >= len(traj)
+                        )
+                        last_done_flag[i] = bool(done_from_traj) or bool(done_from_env)
+
+                        if should_reset:
+                            _ = envs[i].reset()
+                            env_idxs[i] = 0
+                            reset_flash[i] = 18  # show for ~18 frames
+                            # If you want per-episode reward, uncomment:
+                            # cum_rewards[i] = 0.0
+                            last_done_flag[i] = True
+                        else:
+                            if reset_flash[i] > 0:
+                                reset_flash[i] -= 1
+
+                # ---- render frames ----
+                frame0 = unwrap_frame(envs[0].render())
+                frame1 = unwrap_frame(envs[1].render())
+
+                if frame0 is None or frame1 is None:
+                    both_bgr = np.zeros((240, 640, 3), dtype=np.uint8)
+                    cv2.imshow(win_name, both_bgr)
+                    continue
+
+                # ---- resize to same height and stitch ----
+                h = min(frame0.shape[0], frame1.shape[0])
+                w0 = int(frame0.shape[1] * (h / frame0.shape[0]))
+                w1 = int(frame1.shape[1] * (h / frame1.shape[0]))
+                frame0r = cv2.resize(frame0, (w0, h), interpolation=cv2.INTER_AREA)
+                frame1r = cv2.resize(frame1, (w1, h), interpolation=cv2.INTER_AREA)
+
+                both_rgb = np.concatenate([frame0r, frame1r], axis=1)
+
+                # ---- draw vertical separator line between two videos ----
+                sep_x = frame0r.shape[1]
+                cv2.line(both_rgb, (sep_x, 0), (sep_x, both_rgb.shape[0] - 1), (0, 0, 0), 3)          # black thick
+                cv2.line(both_rgb, (sep_x, 0), (sep_x, both_rgb.shape[0] - 1), (255, 255, 255), 1)    # white thin center
+
+                # ---- overlays ----
+                elapsed = time.time() - start_time
+
+                # Titles
+                put_text(both_rgb, "LEFT", (10, 30), scale=1.0)
+                put_text(both_rgb, "RIGHT", (sep_x + 10, 30), scale=1.0)
+
+                # Pause indicator
+                if paused:
+                    put_text(both_rgb, "PAUSED (space resume, n step)", (10, 70), scale=0.8)
+
+                # Per-side blocks (bottom)
+                left_lines = [
+                    f"time: {elapsed:.2f}s  step: {env_idxs[0]}",
+                    f"reward_sum: {cum_rewards[0]:.3f}",
+                    f"action: {last_action[0]}",
+                ]
+                right_lines = [
+                    f"time: {elapsed:.2f}s  step: {env_idxs[1]}",
+                    f"reward_sum: {cum_rewards[1]:.3f}",
+                    f"action: {last_action[1]}",
+                ]
+
+                y_base = both_rgb.shape[0] - 70
+                for k, line in enumerate(left_lines):
+                    put_text(both_rgb, line, (10, y_base + 22 * k), scale=0.75)
+
+                for k, line in enumerate(right_lines):
+                    put_text(both_rgb, line, (sep_x + 10, y_base + 22 * k), scale=0.75)
+
+                # DONE/RESET indicator (red text with outline) near top
+                if last_done_flag[0] or reset_flash[0] > 0:
+                    put_text(both_rgb, "DONE/RESET", (10, 110), scale=0.9, color=(255, 0, 0))
+                if last_done_flag[1] or reset_flash[1] > 0:
+                    put_text(both_rgb, "DONE/RESET", (sep_x + 10, 110), scale=0.9, color=(255, 0, 0))
+
+                # Clear done flag after flash fades
+                if reset_flash[0] == 0:
+                    last_done_flag[0] = False
+                if reset_flash[1] == 0:
+                    last_done_flag[1] = False
+
+                # ---- show ----
+                both_bgr = both_rgb[:, :, ::-1]  # RGB -> BGR for OpenCV
+                cv2.imshow(win_name, both_bgr)
+
+            # ---- handle decision ----
+            if quit_flag:
+                print("quit (no preference saved)")
+                return
 
             if preference != -1:
-                break
+                # Keep your original behavior: store sequences of future_obs (index 1)
+                os_list = []
+                for i in range(2):
+                    _env_name, traj = t[i]
+                    o = [traj[j][1] for j in range(len(traj))]
+                    os_list.append(o)
+                self.add_preference(os_list[0], os_list[1], preference)
 
-            for i in range(len(t)):
-                envs[i].render()
+            if preference == 0:
+                print("1 (left)")
+            elif preference == 1:
+                print("2 (right)")
+            elif preference == 2:
+                print("neutral")
+            else:
+                print("no opinion")
 
-                env_name, trijectory = t[i]
-                obs, future_obs, action, done = trijectory[env_idxs[i]]
-                envs[i].step(action)
-                env_idxs[i] += 1
-                if done or env_idxs[i] >= len(trijectory):
-                    envs[i].reset()
-                    env_idxs[i] = 0
-            sleep(0.02)
+        finally:
+            try:
+                cv2.destroyAllWindows()
+            except Exception:
+                pass
+            for e in envs:
+                try:
+                    e.close()
+                except Exception:
+                    pass
 
-        if preference != -1:
-            os = []
-            for i in range(len(t)):
-                env_name, trijectory = t[i]
-                o = []
 
-                for j in range(len(trijectory)):
-                    o.append(trijectory[j][1])
-
-                os.append(o)
-
-            self.add_preference(os[0], os[1], preference)
-
-        cv2.destroyAllWindows()
-        for i in range(len(envs)):
-            envs[i].close()
-
-        if preference == 0:
-            print(1)
-        elif preference == 1:
-            print(2)
-        elif preference != -1:
-            print("neutral")
-        else:
-            print("no oppinion")
 
 
     def plot(self):

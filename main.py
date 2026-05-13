@@ -141,7 +141,7 @@ def cartpole():
     dqn_solver = DQNSolver(observation_space, action_space)
     hp_model = HumanPreference(observation_space, action_space)
     run = 0
-    episodes = 50
+    episodes = 1000
     for i in range(episodes):
         run += 1
         state = env.reset()
