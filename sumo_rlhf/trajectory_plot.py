@@ -27,6 +27,7 @@ TLS_COLORS = {
 
 DEFAULT_SIGNAL_CYCLE = 90.0
 DEFAULT_GREEN_DURATION = 45.0
+DEFAULT_VEHICLE_LENGTH = 5.0
 
 
 def _raw_series(segment: TrajectorySegment, key: str, default: float = np.nan) -> List[float]:
@@ -373,6 +374,7 @@ def segment_animation_payload(
                     "id": str(vehicle_id),
                     "time": vehicle_t[vehicle_mask].astype(float).tolist(),
                     "position": vehicle_position[vehicle_mask].astype(float).tolist(),
+                    "length": float(points[0].get("length", DEFAULT_VEHICLE_LENGTH)),
                 }
             )
 
@@ -383,6 +385,7 @@ def segment_animation_payload(
         "time": t[in_window].astype(float).tolist(),
         "position": position[in_window].astype(float).tolist(),
         "speed": speed[in_window].astype(float).tolist(),
+        "vehicleLength": DEFAULT_VEHICLE_LENGTH,
         "action": actions[in_window].astype(float).tolist(),
         "actualAccel": actual_accel[in_window].astype(float).tolist(),
         "frontGap": front_gap[in_window].astype(float).tolist(),

@@ -718,7 +718,7 @@ function drawRoadKinematicsChart(panel, segment, currentTime) {
       accelLimits,
       currentTime,
       "#f97316",
-      false,
+      true,
       [5, 4],
     );
   }
@@ -732,10 +732,10 @@ function drawRoadKinematicsChart(panel, segment, currentTime) {
   ctx.stroke();
 }
 
-function drawVehicleRoad(panel, limits, position, y, color, label, isEgo = false) {
+function drawVehicleRoad(panel, limits, position, y, color, label, isEgo = false, lengthMeters = 5.0) {
   if (!finite(position) || position < limits[0] || position > limits[1]) return;
   const x = mapRoadX(panel, limits, position);
-  const length = isEgo ? 34 : 26;
+  const length = Math.max(8, (lengthMeters / (limits[1] - limits[0])) * panel.w);
   const height = isEgo ? 18 : 14;
   ctx.fillStyle = color;
   ctx.strokeStyle = isEgo ? "#0f172a" : "#6b7280";
@@ -747,9 +747,9 @@ function drawVehicleRoad(panel, limits, position, y, color, label, isEgo = false
 
   ctx.fillStyle = "rgba(255, 255, 255, 0.72)";
   ctx.beginPath();
-  ctx.moveTo(x + length / 2 - 3, y);
-  ctx.lineTo(x + length / 2 - 10, y - 5);
-  ctx.lineTo(x + length / 2 - 10, y + 5);
+  ctx.moveTo(x + length / 2 - 2, y);
+  ctx.lineTo(x + length / 2 - Math.min(8, length * 0.45), y - 4);
+  ctx.lineTo(x + length / 2 - Math.min(8, length * 0.45), y + 4);
   ctx.closePath();
   ctx.fill();
 
@@ -759,38 +759,6 @@ function drawVehicleRoad(panel, limits, position, y, color, label, isEgo = false
     ctx.textAlign = "center";
     ctx.fillText(label, x, y - height / 2 - 6);
   }
-}
-
-function assignVehicleRows(vehiclePositions, panel, limits, egoPosition) {
-  const rowOffsets = [-26, -13, 13, 26, -38, 38];
-  const occupiedRight = rowOffsets.map(() => -Infinity);
-  const minSeparation = 34;
-  const assignments = [];
-  const sorted = vehiclePositions
-    .filter((item) => finite(item.position))
-    .map((item) => ({ ...item, x: mapRoadX(panel, limits, item.position) }))
-    .sort((a, b) => a.x - b.x);
-  const egoX = finite(egoPosition) ? mapRoadX(panel, limits, egoPosition) : null;
-
-  for (const vehicle of sorted) {
-    let bestRow = 0;
-    let bestScore = Infinity;
-    for (let row = 0; row < rowOffsets.length; row++) {
-      const separation = vehicle.x - occupiedRight[row];
-      const overlapsEgo =
-        egoX !== null && Math.abs(vehicle.x - egoX) < minSeparation && Math.abs(rowOffsets[row]) < 18;
-      const penalty = separation < minSeparation ? 1000 + (minSeparation - separation) : 0;
-      const egoPenalty = overlapsEgo ? 500 : 0;
-      const score = penalty + egoPenalty + Math.abs(rowOffsets[row]);
-      if (score < bestScore) {
-        bestScore = score;
-        bestRow = row;
-      }
-    }
-    occupiedRight[bestRow] = vehicle.x + minSeparation;
-    assignments.push({ ...vehicle, offset: rowOffsets[bestRow] });
-  }
-  return assignments;
 }
 
 function drawRoadMetrics(segment, panel, currentTime) {
@@ -854,13 +822,17 @@ function drawRoadSegment(segment, x, y, w, h, title, elapsed) {
   for (const vehicle of segment.traffic) {
     const position = interpolateAt(vehicle.time, vehicle.position, currentTime);
     if (finite(position) && position >= limits[0] && position <= limits[1]) {
-      trafficVehicles.push({ id: vehicle.id, position });
+      trafficVehicles.push({
+        id: vehicle.id,
+        position,
+        length: vehicle.length || 5.0,
+      });
     }
   }
-  for (const vehicle of assignVehicleRows(trafficVehicles, panel, limits, egoPosition)) {
-    drawVehicleRoad(panel, limits, vehicle.position, roadY + vehicle.offset, "#9ca3af", "", false);
+  for (const vehicle of trafficVehicles) {
+    drawVehicleRoad(panel, limits, vehicle.position, roadY, "#9ca3af", "", false, vehicle.length);
   }
-  drawVehicleRoad(panel, limits, egoPosition, roadY, "#2563eb", "ego", true);
+  drawVehicleRoad(panel, limits, egoPosition, roadY, "#2563eb", "ego", true, segment.vehicleLength || 5.0);
 
   const egoX = finite(egoPosition) ? mapRoadX(panel, limits, egoPosition) : null;
   if (egoX !== null) {

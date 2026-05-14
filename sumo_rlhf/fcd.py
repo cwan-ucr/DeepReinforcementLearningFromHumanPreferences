@@ -30,8 +30,14 @@ def load_fcd_trajectories(
             # the same longitudinal road position used in the trajectory plots.
             position = float(vehicle.attrib.get("x", "nan"))
             speed = float(vehicle.attrib.get("speed", "nan"))
+            length = float(vehicle.attrib.get("length", "5.0"))
             trajectories.setdefault(veh_id, []).append(
-                {"time": time_s, "position": position, "speed": speed}
+                {
+                    "time": time_s,
+                    "position": position,
+                    "speed": speed,
+                    "length": length,
+                }
             )
     return trajectories
 
