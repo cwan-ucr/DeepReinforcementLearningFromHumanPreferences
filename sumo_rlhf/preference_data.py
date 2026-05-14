@@ -42,9 +42,13 @@ def load_preference_examples(
     }
 
     examples = []
+    missing = []
     for label in load_preference_labels(preferences_path):
-        left = segment_by_id[label.left_id]
-        right = segment_by_id[label.right_id]
+        left = segment_by_id.get(label.left_id)
+        right = segment_by_id.get(label.right_id)
+        if left is None or right is None:
+            missing.append(label)
+            continue
         examples.append(
             PreferenceExample(
                 left=list(iter_step_features(left)),
@@ -52,5 +56,14 @@ def load_preference_examples(
                 preference=label.preference,
             )
         )
+    if missing:
+        sample = ", ".join(
+            f"({item.left_id}, {item.right_id})" for item in missing[:5]
+        )
+        raise KeyError(
+            f"{len(missing)} preference labels reference segment ids that are not "
+            f"in {segments_path}. First missing pairs: {sample}. "
+            "Use the same preference_pool.jsonl that was used during labeling, "
+            "or filter/relabel preferences after regenerating the pool."
+        )
     return examples
-

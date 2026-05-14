@@ -1,15 +1,23 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Sequence, Tuple
+from pathlib import Path
+from typing import Dict, Optional, Sequence, Tuple
 
 import numpy as np
+import os
 
 try:
-    import gym
-    from gym import spaces
-except ImportError as exc:  # pragma: no cover - import-time environment guard
-    raise ImportError("sumo_rlhf currently expects gym to be installed.") from exc
+    import gymnasium as gym
+    from gymnasium import spaces
+except ImportError:  # pragma: no cover - import-time environment guard
+    try:
+        import gym
+        from gym import spaces
+    except ImportError as exc:
+        raise ImportError(
+            "sumo_rlhf expects either gymnasium or gym to be installed."
+        ) from exc
 
 
 @dataclass
@@ -30,6 +38,14 @@ class SumoEgoConfig:
     max_tl_time: float = 120.0
     normalize_observation: bool = True
     speed_mode: Optional[int] = None
+    seed: Optional[int] = 42
+    randomize_seed_on_reset: bool = True
+    fcd_output_dir: Optional[str] = "runs/fcd"
+    ego_route_id: str = "arterial_route"
+    ego_type_id: Optional[str] = None
+    ego_depart_min: float = 0.0
+    ego_depart_max: float = 90.0
+    ego_depart_speed: float = 0.0
 
 
 class SumoEgoEnv(gym.Env):
@@ -51,6 +67,10 @@ class SumoEgoEnv(gym.Env):
         self._traci = None
         self._sumolib = None
         self._steps = 0
+        self._reset_count = 0
+        self._active_seed = config.seed
+        self._current_fcd_path: Optional[Path] = None
+        self._ego_depart_time = 0.0
         self._prev_action = 0.0
         self._last_obs = np.zeros(10, dtype=np.float32)
 
@@ -64,10 +84,11 @@ class SumoEgoEnv(gym.Env):
 
     def reset(self):
         self.close()
+        self._active_seed = self._next_seed()
         self._start_sumo()
         self._steps = 0
         self._prev_action = 0.0
-        self._wait_for_ego()
+        self._depart_ego()
         self._last_obs = self._get_observation()
         return self._last_obs.copy()
 
@@ -93,22 +114,64 @@ class SumoEgoEnv(gym.Env):
 
         self._last_obs = obs.copy()
         info = {
-            "arrived": arrived,
+            **self._current_info(accel, arrived),
             "timeout": timeout,
-            "action_accel": accel,
-            "raw_observation": self._get_raw_observation_dict() if not arrived else {},
         }
         return obs, 0.0, done, info
+
+    def passive_step(self):
+        """Advance SUMO without applying an RL action and record actual acceleration."""
+        if self._traci is None:
+            raise RuntimeError("Call reset() before passive_step().")
+
+        old_speed = 0.0
+        if self.config.ego_id in self._traci.vehicle.getIDList():
+            old_speed = float(self._traci.vehicle.getSpeed(self.config.ego_id))
+
+        self._traci.simulationStep()
+        self._steps += 1
+
+        arrived = self.config.ego_id not in self._traci.vehicle.getIDList()
+        timeout = self._steps >= self.config.max_episode_steps
+        done = bool(arrived or timeout)
+
+        if arrived:
+            actual_accel = 0.0
+            obs = np.zeros(10, dtype=np.float32)
+        else:
+            new_speed = float(self._traci.vehicle.getSpeed(self.config.ego_id))
+            actual_accel = (new_speed - old_speed) / self.config.step_length
+            self._prev_action = actual_accel
+            obs = self._get_observation()
+
+        self._last_obs = obs.copy()
+        info = {
+            **self._current_info(actual_accel, arrived),
+            "timeout": timeout,
+        }
+        return obs, 0.0, done, info
+
+    def observe(self) -> np.ndarray:
+        if self._traci is None:
+            raise RuntimeError("Call reset() before observe().")
+        self._last_obs = self._get_observation()
+        return self._last_obs.copy()
 
     def close(self):
         if self._traci is not None:
             try:
-                self._traci.close(False)
+                self._traci.close(True)
             finally:
                 self._traci = None
 
+    @property
+    def fcd_output_path(self) -> Optional[Path]:
+        return self._current_fcd_path
+
     def seed(self, seed: Optional[int] = None):
         np.random.seed(seed)
+        self.config.seed = seed
+        self._active_seed = seed
 
     def _start_sumo(self):
         try:
@@ -131,9 +194,85 @@ class SumoEgoEnv(gym.Env):
             "--no-warnings",
             "true",
         ]
-        traci.start(cmd)
+        if self._active_seed is not None:
+            cmd.extend(["--seed", str(int(self._active_seed))])
+        self._current_fcd_path = self._make_fcd_output_path()
+        if self._current_fcd_path is not None:
+            self._current_fcd_path.parent.mkdir(parents=True, exist_ok=True)
+            cmd.extend(["--fcd-output", str(self._current_fcd_path)])
+        traci.start(cmd, port=self._free_port())
         self._traci = traci
         self._sumolib = sumolib
+
+    @staticmethod
+    def _free_port() -> int:
+        return 20000 + (os.getpid() % 20000)
+
+    def _next_seed(self) -> Optional[int]:
+        if self.config.seed is None:
+            return None
+        if not self.config.randomize_seed_on_reset:
+            return int(self.config.seed)
+        seed = int(self.config.seed) + self._reset_count
+        self._reset_count += 1
+        return seed
+
+    def _depart_ego(self):
+        rng = np.random.default_rng(self._active_seed)
+        depart_min = float(self.config.ego_depart_min)
+        depart_max = float(self.config.ego_depart_max)
+        if depart_max < depart_min:
+            raise ValueError("ego_depart_max must be >= ego_depart_min.")
+        self._ego_depart_time = float(rng.uniform(depart_min, depart_max))
+
+        while float(self._traci.simulation.getTime()) < self._ego_depart_time:
+            self._traci.simulationStep()
+
+        if self.config.ego_id not in self._traci.vehicle.getIDList():
+            self._traci.vehicle.add(
+                vehID=self.config.ego_id,
+                routeID=self.config.ego_route_id,
+                typeID=self._ego_type_id(),
+                depart="now",
+                departLane="first",
+                departPos="base",
+                departSpeed=str(float(self.config.ego_depart_speed)),
+            )
+
+        for _ in range(self.config.max_depart_delay_steps):
+            if self.config.ego_id in self._traci.vehicle.getIDList():
+                break
+            self._traci.simulationStep()
+        else:
+            raise RuntimeError(
+                f"Ego vehicle '{self.config.ego_id}' could not be inserted after "
+                f"random depart time {self._ego_depart_time:.2f}."
+            )
+
+        if self.config.speed_mode is not None:
+            self._traci.vehicle.setSpeedMode(
+                self.config.ego_id, int(self.config.speed_mode)
+            )
+
+    def _ego_type_id(self) -> str:
+        if self.config.ego_type_id:
+            return self.config.ego_type_id
+        type_ids = set(self._traci.vehicletype.getIDList())
+        if "ego_glosa_type" in type_ids:
+            return "ego_glosa_type"
+        if "ego_type" in type_ids:
+            return "ego_type"
+        return "DEFAULT_VEHTYPE"
+
+    def _make_fcd_output_path(self) -> Optional[Path]:
+        if not self.config.fcd_output_dir:
+            return None
+        episode_index = max(self._reset_count - 1, 0)
+        seed_part = "none" if self._active_seed is None else str(int(self._active_seed))
+        return (
+            Path(self.config.fcd_output_dir)
+            / f"episode_{episode_index:05d}_seed_{seed_part}.fcd.xml"
+        )
 
     def _wait_for_ego(self):
         for _ in range(self.config.max_depart_delay_steps):
@@ -213,7 +352,7 @@ class SumoEgoEnv(gym.Env):
             dtype=np.float32,
         )
 
-    def _get_raw_observation_dict(self) -> Dict[str, float]:
+    def _get_raw_observation_dict(self) -> Dict[str, object]:
         names = [
             "position",
             "speed",
@@ -226,7 +365,86 @@ class SumoEgoEnv(gym.Env):
             "tls_yellow",
             "tls_green",
         ]
-        return dict(zip(names, self._get_raw_observation_array().tolist()))
+        values = self._get_raw_observation_array().tolist()
+        raw = dict(zip(names, values))
+        position = float(raw["position"])
+        tls_distance = float(raw["tls_distance"])
+        tls_red = float(raw["tls_red"])
+        tls_yellow = float(raw["tls_yellow"])
+        tls_green = float(raw["tls_green"])
+        raw["tls_position"] = position + tls_distance
+        if tls_red:
+            raw["tls_state"] = "red"
+        elif tls_yellow:
+            raw["tls_state"] = "yellow"
+        elif tls_green:
+            raw["tls_state"] = "green"
+        else:
+            raw["tls_state"] = "none"
+        raw.update(self._neighbor_observation_dict(position))
+        return raw
+
+    def _neighbor_observation_dict(self, ego_position: float) -> Dict[str, object]:
+        ego_id = self.config.ego_id
+        traci = self._traci
+        neighbors: Dict[str, object] = {
+            "front_vehicle_id": None,
+            "front_vehicle_position": None,
+            "front_vehicle_speed": None,
+            "rear_vehicle_id": None,
+            "rear_vehicle_position": None,
+            "rear_vehicle_speed": None,
+            "rear_distance": self.config.max_front_dist,
+            "delta_v_rear": 0.0,
+        }
+
+        leader = traci.vehicle.getLeader(ego_id, self.config.max_front_dist)
+        if leader is not None:
+            leader_id, gap = leader
+            neighbors["front_vehicle_id"] = str(leader_id)
+            neighbors["front_distance"] = min(float(gap), self.config.max_front_dist)
+            neighbors["front_vehicle_position"] = float(
+                traci.vehicle.getDistance(leader_id)
+            )
+            neighbors["front_vehicle_speed"] = float(traci.vehicle.getSpeed(leader_id))
+
+        follower = self._get_follower(ego_id)
+        if follower is not None:
+            follower_id, gap = follower
+            if follower_id:
+                rear_speed = float(traci.vehicle.getSpeed(follower_id))
+                ego_speed = float(traci.vehicle.getSpeed(ego_id))
+                neighbors["rear_vehicle_id"] = str(follower_id)
+                neighbors["rear_distance"] = min(float(gap), self.config.max_front_dist)
+                neighbors["rear_vehicle_position"] = float(
+                    traci.vehicle.getDistance(follower_id)
+                )
+                neighbors["rear_vehicle_speed"] = rear_speed
+                neighbors["delta_v_rear"] = ego_speed - rear_speed
+        return neighbors
+
+    def _get_follower(self, ego_id: str):
+        try:
+            follower = self._traci.vehicle.getFollower(ego_id, self.config.max_front_dist)
+        except (AttributeError, TypeError):
+            return None
+        if follower is None:
+            return None
+        follower_id, gap = follower
+        if follower_id in ("", None) or float(gap) < 0:
+            return None
+        return follower_id, gap
+
+    def _current_info(self, action_accel: float, arrived: bool) -> Dict[str, object]:
+        return {
+            "arrived": arrived,
+            "episode_step": self._steps,
+            "simulation_time": float(self._traci.simulation.getTime()),
+            "sumo_seed": self._active_seed,
+            "ego_depart_time": self._ego_depart_time,
+            "action_accel": float(action_accel),
+            "raw_observation": self._get_raw_observation_dict() if not arrived else {},
+        }
 
     def _next_tls_features(self) -> Tuple[float, float, float, float, float]:
         next_tls: Sequence[Tuple[str, int, float, str]] = self._traci.vehicle.getNextTLS(
@@ -244,6 +462,5 @@ class SumoEgoEnv(gym.Env):
         state = str(state).lower()
         is_red = float("r" in state)
         is_yellow = float("y" in state)
-        is_green = float(("g" in state) or ("G" in state))
+        is_green = float("g" in state)
         return dist, remaining, is_red, is_yellow, is_green
-

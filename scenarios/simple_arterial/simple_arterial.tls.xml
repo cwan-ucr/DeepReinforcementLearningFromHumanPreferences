@@ -1,14 +1,6 @@
 <additional>
-        <tlLogic id="j1" type="static" programID="arterial_90s" offset="0">
-            <phase duration="45" state="G"/>
-            <phase duration="45" state="r"/>
-        </tlLogic>
-        <tlLogic id="j2" type="static" programID="arterial_90s" offset="0">
-            <phase duration="45" state="G"/>
-            <phase duration="45" state="r"/>
-        </tlLogic>
-        <tlLogic id="j3" type="static" programID="arterial_90s" offset="0">
-            <phase duration="45" state="G"/>
-            <phase duration="45" state="r"/>
-        </tlLogic>
-    </additional>
+    <tlLogic id="j1" type="static" programID="arterial_90s" offset="0">
+        <phase duration="45" state="G"/>
+        <phase duration="45" state="r"/>
+    </tlLogic>
+</additional>

@@ -1,0 +1,17 @@
+<routes>
+    <vType id="human" accel="2.0" decel="4.5" sigma="0.5" length="5.0"
+           minGap="2.5" maxSpeed="13.89" carFollowModel="Krauss"/>
+    <vType id="ego_glosa_type" accel="2.0" decel="4.5" sigma="0.0" length="5.0"
+           minGap="2.5" maxSpeed="13.89" carFollowModel="Krauss">
+            <param key="has.glosa.device" value="true"/>
+            <param key="device.glosa.range" value="300"/>
+            <param key="device.glosa.min-speed" value="2.0"/>
+            <param key="device.glosa.max-speedfactor" value="1.1"/>
+            <param key="device.glosa.add-switchtime" value="2.0"/>
+    </vType>
+
+    <route id="arterial_route" edges="e0 e1"/>
+
+    <flow id="background" type="human" route="arterial_route"
+          begin="0" end="900" probability="0.0625" departSpeed="max"/>
+</routes>

@@ -1,13 +1,12 @@
 <routes>
-        <vType id="human" accel="2.0" decel="4.5" sigma="0.5" length="5.0"
-               minGap="2.5" maxSpeed="13.89" carFollowModel="Krauss"/>
-        <vType id="ego_type" accel="2.0" decel="4.5" sigma="0.0" length="5.0"
-               minGap="2.5" maxSpeed="13.89" carFollowModel="Krauss"/>
+    <vType id="human" accel="2.0" decel="4.5" sigma="0.5" length="5.0"
+           minGap="2.5" maxSpeed="13.89" carFollowModel="Krauss"/>
+    <vType id="ego_type" accel="2.0" decel="4.5" sigma="0.0" length="5.0"
+           minGap="2.5" maxSpeed="13.89" carFollowModel="Krauss">
+    </vType>
 
-        <route id="arterial_route" edges="e0 e1 e2 e3"/>
+    <route id="arterial_route" edges="e0 e1"/>
 
-        <flow id="background" type="human" route="arterial_route"
-              begin="0" end="900" period="8" departSpeed="max"/>
-        <vehicle id="ego" type="ego_type" route="arterial_route"
-                 depart="5" departSpeed="0"/>
-    </routes>
+    <flow id="background" type="human" route="arterial_route"
+          begin="0" end="900" probability="0.0625" departSpeed="max"/>
+</routes>

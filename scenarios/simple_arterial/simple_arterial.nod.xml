@@ -1,7 +1,5 @@
 <nodes>
-        <node id="n0" x="0.0" y="0.0" type="priority"/>
-        <node id="j1" x="300.0" y="0.0" type="traffic_light"/>
-        <node id="j2" x="600.0" y="0.0" type="traffic_light"/>
-        <node id="j3" x="900.0" y="0.0" type="traffic_light"/>
-        <node id="n4" x="1200.0" y="0.0" type="priority"/>
-    </nodes>
+    <node id="n0" x="0.0" y="0.0" type="priority"/>
+    <node id="j1" x="300.0" y="0.0" type="traffic_light"/>
+    <node id="n2" x="350.0" y="0.0" type="priority"/>
+</nodes>

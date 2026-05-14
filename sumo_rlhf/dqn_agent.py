@@ -54,7 +54,7 @@ class DQNAgent:
         if np.random.rand() < self.exploration_rate:
             return random.randrange(self.action_count)
         with torch.no_grad():
-            obs_t = torch.tensor([obs], dtype=torch.float32)
+            obs_t = torch.tensor(np.asarray([obs]), dtype=torch.float32)
             return int(torch.argmax(self.model(obs_t), dim=1).item())
 
     def remember(
@@ -95,4 +95,3 @@ class DQNAgent:
             self.config.exploration_min, self.exploration_rate
         )
         return float(loss.item())
-

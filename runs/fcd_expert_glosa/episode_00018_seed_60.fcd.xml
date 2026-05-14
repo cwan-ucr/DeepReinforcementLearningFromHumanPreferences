@@ -1,0 +1,1106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2026-05-13 21:24:28 by Eclipse SUMO sumo Version 1.24.0
+<sumoConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+
+    <input>
+        <net-file value="scenarios/simple_arterial/simple_arterial.net.xml"/>
+        <route-files value="scenarios/simple_arterial/simple_arterial_glosa.rou.xml"/>
+        <additional-files value="scenarios/simple_arterial/simple_arterial.tls.xml"/>
+    </input>
+
+    <output>
+        <fcd-output value="runs/fcd_expert_glosa/episode_00018_seed_60.fcd.xml"/>
+    </output>
+
+    <time>
+        <begin value="0"/>
+        <end value="900"/>
+        <step-length value="0.5"/>
+    </time>
+
+    <report>
+        <no-warnings value="true"/>
+    </report>
+
+    <traci_server>
+        <remote-port value="27311"/>
+    </traci_server>
+
+    <random_number>
+        <seed value="60"/>
+    </random_number>
+
+</sumoConfiguration>
+-->
+
+<fcd-export xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/fcd_file.xsd">
+    <timestep time="0.00"/>
+    <timestep time="0.50"/>
+    <timestep time="1.00"/>
+    <timestep time="1.50"/>
+    <timestep time="2.00"/>
+    <timestep time="2.50"/>
+    <timestep time="3.00"/>
+    <timestep time="3.50"/>
+    <timestep time="4.00"/>
+    <timestep time="4.50"/>
+    <timestep time="5.00"/>
+    <timestep time="5.50"/>
+    <timestep time="6.00"/>
+    <timestep time="6.50"/>
+    <timestep time="7.00">
+        <vehicle id="background.0" x="5.10" y="-1.60" angle="90.00" type="human" speed="12.87" pos="5.10" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="7.50">
+        <vehicle id="background.0" x="11.33" y="-1.60" angle="90.00" type="human" speed="12.46" pos="11.33" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="8.00">
+        <vehicle id="background.0" x="17.55" y="-1.60" angle="90.00" type="human" speed="12.44" pos="17.55" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="8.50">
+        <vehicle id="background.0" x="23.94" y="-1.60" angle="90.00" type="human" speed="12.78" pos="23.94" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="9.00">
+        <vehicle id="background.0" x="30.36" y="-1.60" angle="90.00" type="human" speed="12.84" pos="30.36" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="9.50">
+        <vehicle id="background.0" x="36.58" y="-1.60" angle="90.00" type="human" speed="12.44" pos="36.58" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="10.00">
+        <vehicle id="background.0" x="42.88" y="-1.60" angle="90.00" type="human" speed="12.60" pos="42.88" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="10.50">
+        <vehicle id="background.0" x="49.20" y="-1.60" angle="90.00" type="human" speed="12.62" pos="49.20" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="11.00">
+        <vehicle id="background.0" x="55.51" y="-1.60" angle="90.00" type="human" speed="12.63" pos="55.51" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="11.50">
+        <vehicle id="background.0" x="61.71" y="-1.60" angle="90.00" type="human" speed="12.39" pos="61.71" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="12.00">
+        <vehicle id="background.0" x="68.01" y="-1.60" angle="90.00" type="human" speed="12.60" pos="68.01" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="12.50">
+        <vehicle id="background.0" x="74.44" y="-1.60" angle="90.00" type="human" speed="12.87" pos="74.44" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="13.00">
+        <vehicle id="background.0" x="80.82" y="-1.60" angle="90.00" type="human" speed="12.76" pos="80.82" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="13.50">
+        <vehicle id="background.0" x="87.03" y="-1.60" angle="90.00" type="human" speed="12.41" pos="87.03" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="14.00">
+        <vehicle id="background.0" x="93.29" y="-1.60" angle="90.00" type="human" speed="12.53" pos="93.29" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="14.50">
+        <vehicle id="background.0" x="99.57" y="-1.60" angle="90.00" type="human" speed="12.56" pos="99.57" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="15.00">
+        <vehicle id="background.0" x="105.78" y="-1.60" angle="90.00" type="human" speed="12.41" pos="105.78" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="15.50">
+        <vehicle id="background.0" x="112.14" y="-1.60" angle="90.00" type="human" speed="12.72" pos="112.14" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="16.00">
+        <vehicle id="background.0" x="118.46" y="-1.60" angle="90.00" type="human" speed="12.64" pos="118.46" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="16.50">
+        <vehicle id="background.0" x="124.81" y="-1.60" angle="90.00" type="human" speed="12.70" pos="124.81" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="17.00">
+        <vehicle id="background.0" x="131.01" y="-1.60" angle="90.00" type="human" speed="12.41" pos="131.01" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="17.50">
+        <vehicle id="background.0" x="137.42" y="-1.60" angle="90.00" type="human" speed="12.80" pos="137.42" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="18.00">
+        <vehicle id="background.0" x="143.80" y="-1.60" angle="90.00" type="human" speed="12.77" pos="143.80" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="18.50">
+        <vehicle id="background.0" x="150.12" y="-1.60" angle="90.00" type="human" speed="12.63" pos="150.12" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="19.00">
+        <vehicle id="background.0" x="156.33" y="-1.60" angle="90.00" type="human" speed="12.43" pos="156.33" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="19.50">
+        <vehicle id="background.0" x="162.55" y="-1.60" angle="90.00" type="human" speed="12.43" pos="162.55" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="20.00">
+        <vehicle id="background.0" x="168.97" y="-1.60" angle="90.00" type="human" speed="12.85" pos="168.97" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="20.50">
+        <vehicle id="background.0" x="175.30" y="-1.60" angle="90.00" type="human" speed="12.65" pos="175.30" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="21.00">
+        <vehicle id="background.0" x="181.59" y="-1.60" angle="90.00" type="human" speed="12.58" pos="181.59" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="21.50">
+        <vehicle id="background.0" x="187.91" y="-1.60" angle="90.00" type="human" speed="12.64" pos="187.91" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="22.00">
+        <vehicle id="background.0" x="194.21" y="-1.60" angle="90.00" type="human" speed="12.61" pos="194.21" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="22.50">
+        <vehicle id="background.0" x="200.43" y="-1.60" angle="90.00" type="human" speed="12.43" pos="200.43" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="23.00">
+        <vehicle id="background.0" x="206.76" y="-1.60" angle="90.00" type="human" speed="12.66" pos="206.76" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="23.50">
+        <vehicle id="background.0" x="213.03" y="-1.60" angle="90.00" type="human" speed="12.54" pos="213.03" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="24.00">
+        <vehicle id="background.0" x="219.31" y="-1.60" angle="90.00" type="human" speed="12.56" pos="219.31" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="24.50">
+        <vehicle id="background.0" x="225.73" y="-1.60" angle="90.00" type="human" speed="12.83" pos="225.73" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="25.00">
+        <vehicle id="background.0" x="232.10" y="-1.60" angle="90.00" type="human" speed="12.73" pos="232.10" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="25.50">
+        <vehicle id="background.0" x="238.53" y="-1.60" angle="90.00" type="human" speed="12.86" pos="238.53" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="26.00">
+        <vehicle id="background.0" x="244.72" y="-1.60" angle="90.00" type="human" speed="12.40" pos="244.72" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="26.50">
+        <vehicle id="background.0" x="250.98" y="-1.60" angle="90.00" type="human" speed="12.51" pos="250.98" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="27.00">
+        <vehicle id="background.0" x="257.39" y="-1.60" angle="90.00" type="human" speed="12.82" pos="257.39" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="27.50">
+        <vehicle id="background.0" x="263.65" y="-1.60" angle="90.00" type="human" speed="12.52" pos="263.65" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="28.00">
+        <vehicle id="background.0" x="269.90" y="-1.60" angle="90.00" type="human" speed="12.49" pos="269.90" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="28.50">
+        <vehicle id="background.0" x="276.32" y="-1.60" angle="90.00" type="human" speed="12.85" pos="276.32" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="29.00">
+        <vehicle id="background.0" x="282.56" y="-1.60" angle="90.00" type="human" speed="12.46" pos="282.56" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="29.50">
+        <vehicle id="background.0" x="288.88" y="-1.60" angle="90.00" type="human" speed="12.64" pos="288.88" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="5.10" y="-1.60" angle="90.00" type="ego_glosa_type" speed="0.00" pos="5.10" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="30.00">
+        <vehicle id="background.0" x="295.10" y="-1.60" angle="90.00" type="human" speed="12.44" pos="295.10" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="5.60" y="-1.60" angle="90.00" type="ego_glosa_type" speed="1.00" pos="5.60" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="30.50">
+        <vehicle id="background.0" x="301.35" y="-1.60" angle="90.00" type="human" speed="12.71" pos="1.35" lane="e1_0" slope="0.00"/>
+        <vehicle id="ego" x="6.60" y="-1.60" angle="90.00" type="ego_glosa_type" speed="2.00" pos="6.60" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="31.00">
+        <vehicle id="background.0" x="307.78" y="-1.60" angle="90.00" type="human" speed="12.86" pos="7.78" lane="e1_0" slope="0.00"/>
+        <vehicle id="ego" x="8.10" y="-1.60" angle="90.00" type="ego_glosa_type" speed="3.00" pos="8.10" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="31.50">
+        <vehicle id="background.0" x="314.08" y="-1.60" angle="90.00" type="human" speed="12.60" pos="14.08" lane="e1_0" slope="0.00"/>
+        <vehicle id="ego" x="10.10" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.00" pos="10.10" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="32.00">
+        <vehicle id="background.0" x="320.40" y="-1.60" angle="90.00" type="human" speed="12.63" pos="20.40" lane="e1_0" slope="0.00"/>
+        <vehicle id="ego" x="12.48" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.75" pos="12.48" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="32.50">
+        <vehicle id="background.0" x="326.72" y="-1.60" angle="90.00" type="human" speed="12.64" pos="26.72" lane="e1_0" slope="0.00"/>
+        <vehicle id="ego" x="14.85" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.76" pos="14.85" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="33.00">
+        <vehicle id="background.0" x="332.94" y="-1.60" angle="90.00" type="human" speed="12.45" pos="32.94" lane="e1_0" slope="0.00"/>
+        <vehicle id="ego" x="17.23" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.76" pos="17.23" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="33.50">
+        <vehicle id="background.0" x="339.27" y="-1.60" angle="90.00" type="human" speed="12.65" pos="39.27" lane="e1_0" slope="0.00"/>
+        <vehicle id="ego" x="19.61" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.76" pos="19.61" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="34.00">
+        <vehicle id="background.0" x="345.60" y="-1.60" angle="90.00" type="human" speed="12.67" pos="45.60" lane="e1_0" slope="0.00"/>
+        <vehicle id="background.1" x="5.10" y="-1.60" angle="90.00" type="human" speed="7.01" pos="5.10" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="21.99" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.76" pos="21.99" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="34.50">
+        <vehicle id="background.1" x="8.44" y="-1.60" angle="90.00" type="human" speed="6.67" pos="8.44" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="24.36" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.76" pos="24.36" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="35.00">
+        <vehicle id="background.1" x="11.67" y="-1.60" angle="90.00" type="human" speed="6.47" pos="11.67" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="26.74" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.76" pos="26.74" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="35.50">
+        <vehicle id="background.1" x="14.74" y="-1.60" angle="90.00" type="human" speed="6.14" pos="14.74" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="29.12" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.76" pos="29.12" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="36.00">
+        <vehicle id="background.1" x="17.44" y="-1.60" angle="90.00" type="human" speed="5.39" pos="17.44" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="5.10" y="-1.60" angle="90.00" type="human" speed="5.12" pos="5.10" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="31.50" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.76" pos="31.50" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="36.50">
+        <vehicle id="background.1" x="20.12" y="-1.60" angle="90.00" type="human" speed="5.37" pos="20.12" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="7.54" y="-1.60" angle="90.00" type="human" speed="4.89" pos="7.54" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="33.87" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.76" pos="33.87" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="37.00">
+        <vehicle id="background.1" x="22.86" y="-1.60" angle="90.00" type="human" speed="5.48" pos="22.86" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="10.04" y="-1.60" angle="90.00" type="human" speed="5.00" pos="10.04" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="36.25" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.76" pos="36.25" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="37.50">
+        <vehicle id="background.1" x="25.28" y="-1.60" angle="90.00" type="human" speed="4.83" pos="25.28" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="12.66" y="-1.60" angle="90.00" type="human" speed="5.23" pos="12.66" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="38.63" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.76" pos="38.63" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="38.00">
+        <vehicle id="background.1" x="27.82" y="-1.60" angle="90.00" type="human" speed="5.08" pos="27.82" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="15.11" y="-1.60" angle="90.00" type="human" speed="4.91" pos="15.11" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="41.01" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.76" pos="41.01" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="38.50">
+        <vehicle id="background.1" x="30.27" y="-1.60" angle="90.00" type="human" speed="4.91" pos="30.27" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="17.55" y="-1.60" angle="90.00" type="human" speed="4.87" pos="17.55" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="43.38" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.76" pos="43.38" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="39.00">
+        <vehicle id="background.1" x="32.67" y="-1.60" angle="90.00" type="human" speed="4.80" pos="32.67" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="19.90" y="-1.60" angle="90.00" type="human" speed="4.70" pos="19.90" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="45.76" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.76" pos="45.76" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="39.50">
+        <vehicle id="background.1" x="35.07" y="-1.60" angle="90.00" type="human" speed="4.79" pos="35.07" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="22.23" y="-1.60" angle="90.00" type="human" speed="4.66" pos="22.23" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="48.14" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.76" pos="48.14" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="40.00">
+        <vehicle id="background.1" x="37.58" y="-1.60" angle="90.00" type="human" speed="5.02" pos="37.58" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="24.70" y="-1.60" angle="90.00" type="human" speed="4.95" pos="24.70" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="50.52" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.76" pos="50.52" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="40.50">
+        <vehicle id="background.1" x="39.95" y="-1.60" angle="90.00" type="human" speed="4.75" pos="39.95" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="27.23" y="-1.60" angle="90.00" type="human" speed="5.06" pos="27.23" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="52.89" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.76" pos="52.89" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="41.00">
+        <vehicle id="background.1" x="42.32" y="-1.60" angle="90.00" type="human" speed="4.74" pos="42.32" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="29.64" y="-1.60" angle="90.00" type="human" speed="4.81" pos="29.64" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="55.27" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.76" pos="55.27" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="41.50">
+        <vehicle id="background.1" x="44.67" y="-1.60" angle="90.00" type="human" speed="4.71" pos="44.67" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="32.08" y="-1.60" angle="90.00" type="human" speed="4.87" pos="32.08" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="57.65" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.76" pos="57.65" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="42.00">
+        <vehicle id="background.1" x="47.07" y="-1.60" angle="90.00" type="human" speed="4.80" pos="47.07" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="34.47" y="-1.60" angle="90.00" type="human" speed="4.80" pos="34.47" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="60.03" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.76" pos="60.03" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="42.50">
+        <vehicle id="background.1" x="49.40" y="-1.60" angle="90.00" type="human" speed="4.67" pos="49.40" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="36.75" y="-1.60" angle="90.00" type="human" speed="4.56" pos="36.75" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="62.41" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.76" pos="62.41" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="43.00">
+        <vehicle id="background.1" x="51.90" y="-1.60" angle="90.00" type="human" speed="5.00" pos="51.90" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="39.01" y="-1.60" angle="90.00" type="human" speed="4.52" pos="39.01" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="64.78" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.76" pos="64.78" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="43.50">
+        <vehicle id="background.1" x="54.26" y="-1.60" angle="90.00" type="human" speed="4.72" pos="54.26" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="41.49" y="-1.60" angle="90.00" type="human" speed="4.95" pos="41.49" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="67.16" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.76" pos="67.16" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="44.00">
+        <vehicle id="background.1" x="56.72" y="-1.60" angle="90.00" type="human" speed="4.91" pos="56.72" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="43.93" y="-1.60" angle="90.00" type="human" speed="4.88" pos="43.93" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="69.54" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.76" pos="69.54" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="44.50">
+        <vehicle id="background.1" x="58.99" y="-1.60" angle="90.00" type="human" speed="4.55" pos="58.99" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="46.45" y="-1.60" angle="90.00" type="human" speed="5.05" pos="46.45" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="71.92" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.76" pos="71.92" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="45.00">
+        <vehicle id="background.1" x="61.53" y="-1.60" angle="90.00" type="human" speed="5.07" pos="61.53" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="48.62" y="-1.60" angle="90.00" type="human" speed="4.33" pos="48.62" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="74.29" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.76" pos="74.29" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="45.50">
+        <vehicle id="background.1" x="63.82" y="-1.60" angle="90.00" type="human" speed="4.59" pos="63.82" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="51.20" y="-1.60" angle="90.00" type="human" speed="5.17" pos="51.20" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="76.50" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="76.50" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="46.00">
+        <vehicle id="background.1" x="66.15" y="-1.60" angle="90.00" type="human" speed="4.65" pos="66.15" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="53.50" y="-1.60" angle="90.00" type="human" speed="4.60" pos="53.50" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="78.71" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="78.71" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="46.50">
+        <vehicle id="background.1" x="68.49" y="-1.60" angle="90.00" type="human" speed="4.69" pos="68.49" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="55.92" y="-1.60" angle="90.00" type="human" speed="4.84" pos="55.92" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="80.93" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="80.93" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="47.00">
+        <vehicle id="background.1" x="70.68" y="-1.60" angle="90.00" type="human" speed="4.36" pos="70.68" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="58.15" y="-1.60" angle="90.00" type="human" speed="4.47" pos="58.15" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="83.14" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="83.14" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="47.50">
+        <vehicle id="background.1" x="72.80" y="-1.60" angle="90.00" type="human" speed="4.25" pos="72.80" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="60.33" y="-1.60" angle="90.00" type="human" speed="4.36" pos="60.33" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="85.35" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="85.35" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="48.00">
+        <vehicle id="background.1" x="75.07" y="-1.60" angle="90.00" type="human" speed="4.53" pos="75.07" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="62.58" y="-1.60" angle="90.00" type="human" speed="4.49" pos="62.58" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="87.56" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="87.56" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="48.50">
+        <vehicle id="background.1" x="77.29" y="-1.60" angle="90.00" type="human" speed="4.44" pos="77.29" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="64.90" y="-1.60" angle="90.00" type="human" speed="4.64" pos="64.90" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="89.77" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="89.77" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="49.00">
+        <vehicle id="background.1" x="79.62" y="-1.60" angle="90.00" type="human" speed="4.66" pos="79.62" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="67.21" y="-1.60" angle="90.00" type="human" speed="4.62" pos="67.21" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="91.98" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="91.98" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="49.50">
+        <vehicle id="background.1" x="81.76" y="-1.60" angle="90.00" type="human" speed="4.28" pos="81.76" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="69.44" y="-1.60" angle="90.00" type="human" speed="4.45" pos="69.44" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="94.19" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="94.19" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="50.00">
+        <vehicle id="background.1" x="84.02" y="-1.60" angle="90.00" type="human" speed="4.53" pos="84.02" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="71.52" y="-1.60" angle="90.00" type="human" speed="4.16" pos="71.52" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="96.40" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="96.40" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="50.50">
+        <vehicle id="background.1" x="86.35" y="-1.60" angle="90.00" type="human" speed="4.65" pos="86.35" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="73.70" y="-1.60" angle="90.00" type="human" speed="4.37" pos="73.70" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="98.62" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="98.62" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="51.00">
+        <vehicle id="background.1" x="88.53" y="-1.60" angle="90.00" type="human" speed="4.38" pos="88.53" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="75.94" y="-1.60" angle="90.00" type="human" speed="4.47" pos="75.94" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="100.83" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="100.83" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="51.50">
+        <vehicle id="background.1" x="90.65" y="-1.60" angle="90.00" type="human" speed="4.22" pos="90.65" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="78.29" y="-1.60" angle="90.00" type="human" speed="4.71" pos="78.29" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="103.04" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="103.04" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="52.00">
+        <vehicle id="background.1" x="92.74" y="-1.60" angle="90.00" type="human" speed="4.19" pos="92.74" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="80.54" y="-1.60" angle="90.00" type="human" speed="4.49" pos="80.54" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="105.25" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="105.25" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="52.50">
+        <vehicle id="background.1" x="94.99" y="-1.60" angle="90.00" type="human" speed="4.51" pos="94.99" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="82.75" y="-1.60" angle="90.00" type="human" speed="4.42" pos="82.75" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="107.46" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="107.46" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="53.00">
+        <vehicle id="background.1" x="97.19" y="-1.60" angle="90.00" type="human" speed="4.38" pos="97.19" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="85.01" y="-1.60" angle="90.00" type="human" speed="4.53" pos="85.01" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="109.67" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="109.67" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="53.50">
+        <vehicle id="background.1" x="99.54" y="-1.60" angle="90.00" type="human" speed="4.71" pos="99.54" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="87.28" y="-1.60" angle="90.00" type="human" speed="4.55" pos="87.28" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="111.88" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="111.88" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="54.00">
+        <vehicle id="background.1" x="101.86" y="-1.60" angle="90.00" type="human" speed="4.64" pos="101.86" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="89.63" y="-1.60" angle="90.00" type="human" speed="4.68" pos="89.63" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="114.09" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="114.09" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="54.50">
+        <vehicle id="background.1" x="104.08" y="-1.60" angle="90.00" type="human" speed="4.44" pos="104.08" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="91.88" y="-1.60" angle="90.00" type="human" speed="4.50" pos="91.88" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="116.30" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="116.30" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="55.00">
+        <vehicle id="background.1" x="106.18" y="-1.60" angle="90.00" type="human" speed="4.19" pos="106.18" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="94.01" y="-1.60" angle="90.00" type="human" speed="4.28" pos="94.01" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="118.52" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="118.52" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="55.50">
+        <vehicle id="background.1" x="108.42" y="-1.60" angle="90.00" type="human" speed="4.49" pos="108.42" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="96.04" y="-1.60" angle="90.00" type="human" speed="4.06" pos="96.04" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="5.10" y="-1.60" angle="90.00" type="human" speed="13.89" pos="5.10" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="120.73" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="120.73" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="56.00">
+        <vehicle id="background.1" x="110.57" y="-1.60" angle="90.00" type="human" speed="4.29" pos="110.57" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="98.21" y="-1.60" angle="90.00" type="human" speed="4.34" pos="98.21" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="11.89" y="-1.60" angle="90.00" type="human" speed="13.58" pos="11.89" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="122.94" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="122.94" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="56.50">
+        <vehicle id="background.1" x="112.67" y="-1.60" angle="90.00" type="human" speed="4.21" pos="112.67" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="100.28" y="-1.60" angle="90.00" type="human" speed="4.14" pos="100.28" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="18.68" y="-1.60" angle="90.00" type="human" speed="13.58" pos="18.68" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="5.10" y="-1.60" angle="90.00" type="human" speed="11.45" pos="5.10" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="125.15" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="125.15" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="57.00">
+        <vehicle id="background.1" x="115.00" y="-1.60" angle="90.00" type="human" speed="4.65" pos="115.00" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="102.47" y="-1.60" angle="90.00" type="human" speed="4.37" pos="102.47" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="25.40" y="-1.60" angle="90.00" type="human" speed="13.44" pos="25.40" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="10.74" y="-1.60" angle="90.00" type="human" speed="11.28" pos="10.74" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="127.36" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="127.36" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="57.50">
+        <vehicle id="background.1" x="117.22" y="-1.60" angle="90.00" type="human" speed="4.45" pos="117.22" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="104.67" y="-1.60" angle="90.00" type="human" speed="4.40" pos="104.67" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="32.20" y="-1.60" angle="90.00" type="human" speed="13.60" pos="32.20" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="16.34" y="-1.60" angle="90.00" type="human" speed="11.19" pos="16.34" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="129.57" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="129.57" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="58.00">
+        <vehicle id="background.1" x="119.53" y="-1.60" angle="90.00" type="human" speed="4.62" pos="119.53" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="106.92" y="-1.60" angle="90.00" type="human" speed="4.49" pos="106.92" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="39.11" y="-1.60" angle="90.00" type="human" speed="13.83" pos="39.11" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="22.37" y="-1.60" angle="90.00" type="human" speed="12.07" pos="22.37" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="131.78" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="131.78" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="58.50">
+        <vehicle id="background.1" x="121.68" y="-1.60" angle="90.00" type="human" speed="4.30" pos="121.68" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="109.29" y="-1.60" angle="90.00" type="human" speed="4.75" pos="109.29" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="45.91" y="-1.60" angle="90.00" type="human" speed="13.59" pos="45.91" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="28.53" y="-1.60" angle="90.00" type="human" speed="12.30" pos="28.53" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="133.99" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="133.99" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="59.00">
+        <vehicle id="background.1" x="123.96" y="-1.60" angle="90.00" type="human" speed="4.55" pos="123.96" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="111.45" y="-1.60" angle="90.00" type="human" speed="4.32" pos="111.45" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="52.68" y="-1.60" angle="90.00" type="human" speed="13.54" pos="52.68" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="34.72" y="-1.60" angle="90.00" type="human" speed="12.39" pos="34.72" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="136.20" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="136.20" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="59.50">
+        <vehicle id="background.1" x="126.17" y="-1.60" angle="90.00" type="human" speed="4.43" pos="126.17" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="113.79" y="-1.60" angle="90.00" type="human" speed="4.66" pos="113.79" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="59.44" y="-1.60" angle="90.00" type="human" speed="13.52" pos="59.44" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="40.94" y="-1.60" angle="90.00" type="human" speed="12.44" pos="40.94" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="138.42" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="138.42" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="60.00">
+        <vehicle id="background.1" x="128.25" y="-1.60" angle="90.00" type="human" speed="4.17" pos="128.25" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="116.05" y="-1.60" angle="90.00" type="human" speed="4.52" pos="116.05" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="66.29" y="-1.60" angle="90.00" type="human" speed="13.68" pos="66.29" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="47.12" y="-1.60" angle="90.00" type="human" speed="12.36" pos="47.12" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="140.63" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="140.63" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="60.50">
+        <vehicle id="background.1" x="130.56" y="-1.60" angle="90.00" type="human" speed="4.62" pos="130.56" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="118.09" y="-1.60" angle="90.00" type="human" speed="4.08" pos="118.09" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="73.16" y="-1.60" angle="90.00" type="human" speed="13.74" pos="73.16" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="53.63" y="-1.60" angle="90.00" type="human" speed="13.03" pos="53.63" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="142.84" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="142.84" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="61.00">
+        <vehicle id="background.1" x="132.79" y="-1.60" angle="90.00" type="human" speed="4.45" pos="132.79" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="120.43" y="-1.60" angle="90.00" type="human" speed="4.69" pos="120.43" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="79.90" y="-1.60" angle="90.00" type="human" speed="13.49" pos="79.90" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="60.19" y="-1.60" angle="90.00" type="human" speed="13.11" pos="60.19" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="145.05" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="145.05" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="61.50">
+        <vehicle id="background.1" x="134.98" y="-1.60" angle="90.00" type="human" speed="4.38" pos="134.98" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="122.66" y="-1.60" angle="90.00" type="human" speed="4.46" pos="122.66" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="86.74" y="-1.60" angle="90.00" type="human" speed="13.67" pos="86.74" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="66.62" y="-1.60" angle="90.00" type="human" speed="12.86" pos="66.62" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="147.26" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="147.26" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="62.00">
+        <vehicle id="background.1" x="137.05" y="-1.60" angle="90.00" type="human" speed="4.13" pos="137.05" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="124.74" y="-1.60" angle="90.00" type="human" speed="4.15" pos="124.74" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="93.28" y="-1.60" angle="90.00" type="human" speed="13.09" pos="93.28" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="73.28" y="-1.60" angle="90.00" type="human" speed="13.32" pos="73.28" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="149.47" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="149.47" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="62.50">
+        <vehicle id="background.1" x="139.38" y="-1.60" angle="90.00" type="human" speed="4.67" pos="139.38" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="126.84" y="-1.60" angle="90.00" type="human" speed="4.22" pos="126.84" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="99.04" y="-1.60" angle="90.00" type="human" speed="11.52" pos="99.04" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="79.50" y="-1.60" angle="90.00" type="human" speed="12.43" pos="79.50" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="151.68" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="151.68" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="63.00">
+        <vehicle id="background.1" x="141.60" y="-1.60" angle="90.00" type="human" speed="4.43" pos="141.60" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="129.15" y="-1.60" angle="90.00" type="human" speed="4.61" pos="129.15" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="104.29" y="-1.60" angle="90.00" type="human" speed="10.49" pos="104.29" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="85.18" y="-1.60" angle="90.00" type="human" speed="11.37" pos="85.18" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="153.89" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="153.89" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="63.50">
+        <vehicle id="background.1" x="143.89" y="-1.60" angle="90.00" type="human" speed="4.58" pos="143.89" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="131.39" y="-1.60" angle="90.00" type="human" speed="4.48" pos="131.39" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="109.13" y="-1.60" angle="90.00" type="human" speed="9.70" pos="109.13" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="90.49" y="-1.60" angle="90.00" type="human" speed="10.62" pos="90.49" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="156.10" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="156.10" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="64.00">
+        <vehicle id="background.1" x="146.02" y="-1.60" angle="90.00" type="human" speed="4.25" pos="146.02" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="133.67" y="-1.60" angle="90.00" type="human" speed="4.56" pos="133.67" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="113.60" y="-1.60" angle="90.00" type="human" speed="8.93" pos="113.60" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="95.34" y="-1.60" angle="90.00" type="human" speed="9.70" pos="95.34" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="158.32" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="158.32" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="64.50">
+        <vehicle id="background.1" x="148.18" y="-1.60" angle="90.00" type="human" speed="4.33" pos="148.18" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="135.76" y="-1.60" angle="90.00" type="human" speed="4.19" pos="135.76" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="117.62" y="-1.60" angle="90.00" type="human" speed="8.05" pos="117.62" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="99.90" y="-1.60" angle="90.00" type="human" speed="9.12" pos="99.90" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="160.53" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="160.53" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="65.00">
+        <vehicle id="background.1" x="150.33" y="-1.60" angle="90.00" type="human" speed="4.29" pos="150.33" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="138.01" y="-1.60" angle="90.00" type="human" speed="4.48" pos="138.01" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="121.05" y="-1.60" angle="90.00" type="human" speed="6.85" pos="121.05" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="104.33" y="-1.60" angle="90.00" type="human" speed="8.86" pos="104.33" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="162.74" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="162.74" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="65.50">
+        <vehicle id="background.1" x="152.51" y="-1.60" angle="90.00" type="human" speed="4.36" pos="152.51" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="140.18" y="-1.60" angle="90.00" type="human" speed="4.35" pos="140.18" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="124.39" y="-1.60" angle="90.00" type="human" speed="6.67" pos="124.39" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="108.19" y="-1.60" angle="90.00" type="human" speed="7.72" pos="108.19" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="164.95" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="164.95" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="66.00">
+        <vehicle id="background.1" x="154.80" y="-1.60" angle="90.00" type="human" speed="4.57" pos="154.80" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="142.37" y="-1.60" angle="90.00" type="human" speed="4.38" pos="142.37" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="127.50" y="-1.60" angle="90.00" type="human" speed="6.21" pos="127.50" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="111.90" y="-1.60" angle="90.00" type="human" speed="7.43" pos="111.90" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="167.16" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="167.16" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="66.50">
+        <vehicle id="background.1" x="157.09" y="-1.60" angle="90.00" type="human" speed="4.58" pos="157.09" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="144.61" y="-1.60" angle="90.00" type="human" speed="4.47" pos="144.61" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="130.45" y="-1.60" angle="90.00" type="human" speed="5.90" pos="130.45" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="115.25" y="-1.60" angle="90.00" type="human" speed="6.69" pos="115.25" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="169.37" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="169.37" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="67.00">
+        <vehicle id="background.1" x="159.29" y="-1.60" angle="90.00" type="human" speed="4.41" pos="159.29" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="146.93" y="-1.60" angle="90.00" type="human" speed="4.65" pos="146.93" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="133.19" y="-1.60" angle="90.00" type="human" speed="5.49" pos="133.19" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="118.40" y="-1.60" angle="90.00" type="human" speed="6.30" pos="118.40" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="171.58" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="171.58" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="67.50">
+        <vehicle id="background.1" x="161.38" y="-1.60" angle="90.00" type="human" speed="4.17" pos="161.38" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="149.22" y="-1.60" angle="90.00" type="human" speed="4.58" pos="149.22" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="135.75" y="-1.60" angle="90.00" type="human" speed="5.11" pos="135.75" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="121.59" y="-1.60" angle="90.00" type="human" speed="6.38" pos="121.59" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="173.79" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="173.79" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="68.00">
+        <vehicle id="background.1" x="163.63" y="-1.60" angle="90.00" type="human" speed="4.50" pos="163.63" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="151.37" y="-1.60" angle="90.00" type="human" speed="4.30" pos="151.37" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="138.14" y="-1.60" angle="90.00" type="human" speed="4.78" pos="138.14" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="124.51" y="-1.60" angle="90.00" type="human" speed="5.85" pos="124.51" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="176.00" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="176.00" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="68.50">
+        <vehicle id="background.1" x="165.85" y="-1.60" angle="90.00" type="human" speed="4.44" pos="165.85" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="153.66" y="-1.60" angle="90.00" type="human" speed="4.58" pos="153.66" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="140.44" y="-1.60" angle="90.00" type="human" speed="4.61" pos="140.44" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="127.05" y="-1.60" angle="90.00" type="human" speed="5.07" pos="127.05" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="178.22" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="178.22" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="69.00">
+        <vehicle id="background.1" x="167.99" y="-1.60" angle="90.00" type="human" speed="4.28" pos="167.99" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="155.77" y="-1.60" angle="90.00" type="human" speed="4.21" pos="155.77" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="142.94" y="-1.60" angle="90.00" type="human" speed="4.99" pos="142.94" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="129.45" y="-1.60" angle="90.00" type="human" speed="4.80" pos="129.45" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="180.43" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="180.43" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="69.50">
+        <vehicle id="background.1" x="170.28" y="-1.60" angle="90.00" type="human" speed="4.58" pos="170.28" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="157.89" y="-1.60" angle="90.00" type="human" speed="4.25" pos="157.89" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="145.23" y="-1.60" angle="90.00" type="human" speed="4.59" pos="145.23" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="132.17" y="-1.60" angle="90.00" type="human" speed="5.43" pos="132.17" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="182.64" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="182.64" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="70.00">
+        <vehicle id="background.1" x="172.56" y="-1.60" angle="90.00" type="human" speed="4.57" pos="172.56" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="160.23" y="-1.60" angle="90.00" type="human" speed="4.67" pos="160.23" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="147.41" y="-1.60" angle="90.00" type="human" speed="4.36" pos="147.41" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="134.69" y="-1.60" angle="90.00" type="human" speed="5.05" pos="134.69" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="184.85" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="184.85" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="70.50">
+        <vehicle id="background.1" x="174.67" y="-1.60" angle="90.00" type="human" speed="4.22" pos="174.67" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="162.37" y="-1.60" angle="90.00" type="human" speed="4.28" pos="162.37" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="149.75" y="-1.60" angle="90.00" type="human" speed="4.67" pos="149.75" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="137.07" y="-1.60" angle="90.00" type="human" speed="4.76" pos="137.07" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="187.06" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="187.06" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="71.00">
+        <vehicle id="background.1" x="176.93" y="-1.60" angle="90.00" type="human" speed="4.52" pos="176.93" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="164.48" y="-1.60" angle="90.00" type="human" speed="4.23" pos="164.48" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="152.05" y="-1.60" angle="90.00" type="human" speed="4.61" pos="152.05" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="139.44" y="-1.60" angle="90.00" type="human" speed="4.73" pos="139.44" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="189.27" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="189.27" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="71.50">
+        <vehicle id="background.1" x="179.06" y="-1.60" angle="90.00" type="human" speed="4.25" pos="179.06" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="166.69" y="-1.60" angle="90.00" type="human" speed="4.41" pos="166.69" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="154.24" y="-1.60" angle="90.00" type="human" speed="4.37" pos="154.24" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="141.85" y="-1.60" angle="90.00" type="human" speed="4.82" pos="141.85" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="191.48" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="191.48" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="72.00">
+        <vehicle id="background.1" x="181.20" y="-1.60" angle="90.00" type="human" speed="4.30" pos="181.20" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="168.75" y="-1.60" angle="90.00" type="human" speed="4.13" pos="168.75" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="156.36" y="-1.60" angle="90.00" type="human" speed="4.24" pos="156.36" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="144.06" y="-1.60" angle="90.00" type="human" speed="4.42" pos="144.06" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="193.69" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="193.69" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="72.50">
+        <vehicle id="background.1" x="183.36" y="-1.60" angle="90.00" type="human" speed="4.31" pos="183.36" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="170.98" y="-1.60" angle="90.00" type="human" speed="4.45" pos="170.98" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="158.61" y="-1.60" angle="90.00" type="human" speed="4.51" pos="158.61" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="146.16" y="-1.60" angle="90.00" type="human" speed="4.20" pos="146.16" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="195.91" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="195.91" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="73.00">
+        <vehicle id="background.1" x="185.57" y="-1.60" angle="90.00" type="human" speed="4.42" pos="185.57" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="173.18" y="-1.60" angle="90.00" type="human" speed="4.42" pos="173.18" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="160.73" y="-1.60" angle="90.00" type="human" speed="4.24" pos="160.73" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="148.28" y="-1.60" angle="90.00" type="human" speed="4.24" pos="148.28" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="198.12" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="198.12" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="73.50">
+        <vehicle id="background.1" x="187.72" y="-1.60" angle="90.00" type="human" speed="4.29" pos="187.72" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="175.41" y="-1.60" angle="90.00" type="human" speed="4.45" pos="175.41" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="162.91" y="-1.60" angle="90.00" type="human" speed="4.35" pos="162.91" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="150.44" y="-1.60" angle="90.00" type="human" speed="4.33" pos="150.44" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="200.33" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="200.33" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="74.00">
+        <vehicle id="background.1" x="189.96" y="-1.60" angle="90.00" type="human" speed="4.49" pos="189.96" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="177.53" y="-1.60" angle="90.00" type="human" speed="4.24" pos="177.53" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="165.12" y="-1.60" angle="90.00" type="human" speed="4.43" pos="165.12" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="152.78" y="-1.60" angle="90.00" type="human" speed="4.68" pos="152.78" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="5.10" y="-1.60" angle="90.00" type="human" speed="10.58" pos="5.10" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="202.54" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="202.54" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="74.50">
+        <vehicle id="background.1" x="192.15" y="-1.60" angle="90.00" type="human" speed="4.38" pos="192.15" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="179.68" y="-1.60" angle="90.00" type="human" speed="4.30" pos="179.68" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="167.27" y="-1.60" angle="90.00" type="human" speed="4.31" pos="167.27" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="154.96" y="-1.60" angle="90.00" type="human" speed="4.35" pos="154.96" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="10.29" y="-1.60" angle="90.00" type="human" speed="10.39" pos="10.29" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="204.75" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="204.75" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="75.00">
+        <vehicle id="background.1" x="194.54" y="-1.60" angle="90.00" type="human" speed="4.77" pos="194.54" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="182.03" y="-1.60" angle="90.00" type="human" speed="4.69" pos="182.03" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="169.52" y="-1.60" angle="90.00" type="human" speed="4.50" pos="169.52" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="157.09" y="-1.60" angle="90.00" type="human" speed="4.26" pos="157.09" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="15.56" y="-1.60" angle="90.00" type="human" speed="10.54" pos="15.56" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="206.96" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="206.96" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="75.50">
+        <vehicle id="background.1" x="196.83" y="-1.60" angle="90.00" type="human" speed="4.59" pos="196.83" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="184.23" y="-1.60" angle="90.00" type="human" speed="4.40" pos="184.23" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="171.84" y="-1.60" angle="90.00" type="human" speed="4.65" pos="171.84" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="159.38" y="-1.60" angle="90.00" type="human" speed="4.58" pos="159.38" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="20.69" y="-1.60" angle="90.00" type="human" speed="10.25" pos="20.69" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="209.17" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="209.17" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="76.00">
+        <vehicle id="background.1" x="198.95" y="-1.60" angle="90.00" type="human" speed="4.24" pos="198.95" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="186.46" y="-1.60" angle="90.00" type="human" speed="4.46" pos="186.46" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="174.12" y="-1.60" angle="90.00" type="human" speed="4.56" pos="174.12" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="161.68" y="-1.60" angle="90.00" type="human" speed="4.61" pos="161.68" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="25.73" y="-1.60" angle="90.00" type="human" speed="10.09" pos="25.73" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="211.38" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="211.38" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="76.50">
+        <vehicle id="background.1" x="201.19" y="-1.60" angle="90.00" type="human" speed="4.48" pos="201.19" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="188.71" y="-1.60" angle="90.00" type="human" speed="4.50" pos="188.71" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="176.44" y="-1.60" angle="90.00" type="human" speed="4.63" pos="176.44" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="164.01" y="-1.60" angle="90.00" type="human" speed="4.66" pos="164.01" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="30.88" y="-1.60" angle="90.00" type="human" speed="10.30" pos="30.88" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="213.59" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="213.59" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="77.00">
+        <vehicle id="background.1" x="203.32" y="-1.60" angle="90.00" type="human" speed="4.27" pos="203.32" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="190.96" y="-1.60" angle="90.00" type="human" speed="4.49" pos="190.96" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="178.51" y="-1.60" angle="90.00" type="human" speed="4.14" pos="178.51" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="166.31" y="-1.60" angle="90.00" type="human" speed="4.59" pos="166.31" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="35.96" y="-1.60" angle="90.00" type="human" speed="10.17" pos="35.96" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="215.81" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="215.81" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="77.50">
+        <vehicle id="background.1" x="205.55" y="-1.60" angle="90.00" type="human" speed="4.44" pos="205.55" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="193.18" y="-1.60" angle="90.00" type="human" speed="4.45" pos="193.18" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="180.64" y="-1.60" angle="90.00" type="human" speed="4.25" pos="180.64" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="168.47" y="-1.60" angle="90.00" type="human" speed="4.33" pos="168.47" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="41.02" y="-1.60" angle="90.00" type="human" speed="10.11" pos="41.02" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="218.02" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="218.02" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="78.00">
+        <vehicle id="background.1" x="207.79" y="-1.60" angle="90.00" type="human" speed="4.50" pos="207.79" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="195.30" y="-1.60" angle="90.00" type="human" speed="4.23" pos="195.30" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="182.89" y="-1.60" angle="90.00" type="human" speed="4.50" pos="182.89" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="170.72" y="-1.60" angle="90.00" type="human" speed="4.49" pos="170.72" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="46.15" y="-1.60" angle="90.00" type="human" speed="10.27" pos="46.15" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="220.23" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="220.23" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="78.50">
+        <vehicle id="background.1" x="210.08" y="-1.60" angle="90.00" type="human" speed="4.57" pos="210.08" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="197.57" y="-1.60" angle="90.00" type="human" speed="4.55" pos="197.57" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="185.10" y="-1.60" angle="90.00" type="human" speed="4.43" pos="185.10" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="172.96" y="-1.60" angle="90.00" type="human" speed="4.48" pos="172.96" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="51.29" y="-1.60" angle="90.00" type="human" speed="10.28" pos="51.29" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="222.44" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="222.44" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="79.00">
+        <vehicle id="background.1" x="212.40" y="-1.60" angle="90.00" type="human" speed="4.65" pos="212.40" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="199.89" y="-1.60" angle="90.00" type="human" speed="4.63" pos="199.89" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="187.34" y="-1.60" angle="90.00" type="human" speed="4.47" pos="187.34" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="175.23" y="-1.60" angle="90.00" type="human" speed="4.54" pos="175.23" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="56.48" y="-1.60" angle="90.00" type="human" speed="10.37" pos="56.48" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="224.65" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="224.65" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="79.50">
+        <vehicle id="background.1" x="214.46" y="-1.60" angle="90.00" type="human" speed="4.12" pos="214.46" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="202.08" y="-1.60" angle="90.00" type="human" speed="4.38" pos="202.08" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="189.58" y="-1.60" angle="90.00" type="human" speed="4.49" pos="189.58" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="177.38" y="-1.60" angle="90.00" type="human" speed="4.31" pos="177.38" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="61.53" y="-1.60" angle="90.00" type="human" speed="10.11" pos="61.53" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="226.86" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="226.86" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="80.00">
+        <vehicle id="background.1" x="216.74" y="-1.60" angle="90.00" type="human" speed="4.55" pos="216.74" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="204.33" y="-1.60" angle="90.00" type="human" speed="4.50" pos="204.33" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="191.72" y="-1.60" angle="90.00" type="human" speed="4.28" pos="191.72" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="179.52" y="-1.60" angle="90.00" type="human" speed="4.28" pos="179.52" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="66.58" y="-1.60" angle="90.00" type="human" speed="10.10" pos="66.58" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="229.07" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="229.07" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="80.50">
+        <vehicle id="background.1" x="218.83" y="-1.60" angle="90.00" type="human" speed="4.18" pos="218.83" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="206.52" y="-1.60" angle="90.00" type="human" speed="4.39" pos="206.52" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="193.93" y="-1.60" angle="90.00" type="human" speed="4.42" pos="193.93" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="181.59" y="-1.60" angle="90.00" type="human" speed="4.13" pos="181.59" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="71.80" y="-1.60" angle="90.00" type="human" speed="10.44" pos="71.80" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="231.28" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="231.28" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="81.00">
+        <vehicle id="background.1" x="220.97" y="-1.60" angle="90.00" type="human" speed="4.29" pos="220.97" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="208.67" y="-1.60" angle="90.00" type="human" speed="4.30" pos="208.67" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="196.28" y="-1.60" angle="90.00" type="human" speed="4.70" pos="196.28" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="183.90" y="-1.60" angle="90.00" type="human" speed="4.62" pos="183.90" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="77.02" y="-1.60" angle="90.00" type="human" speed="10.43" pos="77.02" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="233.49" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="233.49" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="81.50">
+        <vehicle id="background.1" x="223.32" y="-1.60" angle="90.00" type="human" speed="4.69" pos="223.32" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="210.86" y="-1.60" angle="90.00" type="human" speed="4.38" pos="210.86" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="198.42" y="-1.60" angle="90.00" type="human" speed="4.27" pos="198.42" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="186.26" y="-1.60" angle="90.00" type="human" speed="4.72" pos="186.26" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="82.24" y="-1.60" angle="90.00" type="human" speed="10.45" pos="82.24" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="5.10" y="-1.60" angle="90.00" type="human" speed="13.64" pos="5.10" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="235.71" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="235.71" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="82.00">
+        <vehicle id="background.1" x="225.56" y="-1.60" angle="90.00" type="human" speed="4.48" pos="225.56" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="213.03" y="-1.60" angle="90.00" type="human" speed="4.34" pos="213.03" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="200.67" y="-1.60" angle="90.00" type="human" speed="4.50" pos="200.67" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="188.28" y="-1.60" angle="90.00" type="human" speed="4.05" pos="188.28" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="87.52" y="-1.60" angle="90.00" type="human" speed="10.56" pos="87.52" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="11.81" y="-1.60" angle="90.00" type="human" speed="13.42" pos="11.81" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="237.92" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="237.92" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="82.50">
+        <vehicle id="background.1" x="227.85" y="-1.60" angle="90.00" type="human" speed="4.59" pos="227.85" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="215.38" y="-1.60" angle="90.00" type="human" speed="4.70" pos="215.38" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="202.76" y="-1.60" angle="90.00" type="human" speed="4.19" pos="202.76" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="190.51" y="-1.60" angle="90.00" type="human" speed="4.47" pos="190.51" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="92.72" y="-1.60" angle="90.00" type="human" speed="10.39" pos="92.72" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="18.60" y="-1.60" angle="90.00" type="human" speed="13.58" pos="18.60" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="240.13" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="240.13" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="83.00">
+        <vehicle id="background.1" x="230.02" y="-1.60" angle="90.00" type="human" speed="4.35" pos="230.02" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="217.67" y="-1.60" angle="90.00" type="human" speed="4.57" pos="217.67" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="205.05" y="-1.60" angle="90.00" type="human" speed="4.57" pos="205.05" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="192.67" y="-1.60" angle="90.00" type="human" speed="4.31" pos="192.67" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="97.84" y="-1.60" angle="90.00" type="human" speed="10.24" pos="97.84" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="25.42" y="-1.60" angle="90.00" type="human" speed="13.63" pos="25.42" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="242.34" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="242.34" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="83.50">
+        <vehicle id="background.1" x="232.29" y="-1.60" angle="90.00" type="human" speed="4.53" pos="232.29" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="219.75" y="-1.60" angle="90.00" type="human" speed="4.17" pos="219.75" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="207.45" y="-1.60" angle="90.00" type="human" speed="4.80" pos="207.45" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="194.86" y="-1.60" angle="90.00" type="human" speed="4.38" pos="194.86" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="103.00" y="-1.60" angle="90.00" type="human" speed="10.33" pos="103.00" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="32.22" y="-1.60" angle="90.00" type="human" speed="13.61" pos="32.22" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="244.55" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="244.55" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="84.00">
+        <vehicle id="background.1" x="234.41" y="-1.60" angle="90.00" type="human" speed="4.24" pos="234.41" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="222.01" y="-1.60" angle="90.00" type="human" speed="4.52" pos="222.01" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="209.62" y="-1.60" angle="90.00" type="human" speed="4.35" pos="209.62" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="197.28" y="-1.60" angle="90.00" type="human" speed="4.85" pos="197.28" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="108.25" y="-1.60" angle="90.00" type="human" speed="10.49" pos="108.25" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="38.98" y="-1.60" angle="90.00" type="human" speed="13.51" pos="38.98" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="246.76" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="246.76" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="84.50">
+        <vehicle id="background.1" x="236.50" y="-1.60" angle="90.00" type="human" speed="4.19" pos="236.50" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="224.14" y="-1.60" angle="90.00" type="human" speed="4.27" pos="224.14" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="211.83" y="-1.60" angle="90.00" type="human" speed="4.41" pos="211.83" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="199.59" y="-1.60" angle="90.00" type="human" speed="4.62" pos="199.59" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="113.38" y="-1.60" angle="90.00" type="human" speed="10.28" pos="113.38" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="45.71" y="-1.60" angle="90.00" type="human" speed="13.47" pos="45.71" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="248.97" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="248.97" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="85.00">
+        <vehicle id="background.1" x="238.73" y="-1.60" angle="90.00" type="human" speed="4.45" pos="238.73" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="226.36" y="-1.60" angle="90.00" type="human" speed="4.42" pos="226.36" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="214.11" y="-1.60" angle="90.00" type="human" speed="4.56" pos="214.11" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="201.64" y="-1.60" angle="90.00" type="human" speed="4.10" pos="201.64" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="118.49" y="-1.60" angle="90.00" type="human" speed="10.21" pos="118.49" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="52.48" y="-1.60" angle="90.00" type="human" speed="13.54" pos="52.48" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="251.18" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="251.18" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="85.50">
+        <vehicle id="background.1" x="241.04" y="-1.60" angle="90.00" type="human" speed="4.62" pos="241.04" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="228.60" y="-1.60" angle="90.00" type="human" speed="4.48" pos="228.60" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="216.35" y="-1.60" angle="90.00" type="human" speed="4.47" pos="216.35" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="203.82" y="-1.60" angle="90.00" type="human" speed="4.35" pos="203.82" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="123.64" y="-1.60" angle="90.00" type="human" speed="10.31" pos="123.64" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="59.19" y="-1.60" angle="90.00" type="human" speed="13.41" pos="59.19" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="253.39" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="253.39" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="86.00">
+        <vehicle id="background.1" x="243.12" y="-1.60" angle="90.00" type="human" speed="4.17" pos="243.12" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="230.96" y="-1.60" angle="90.00" type="human" speed="4.73" pos="230.96" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="218.49" y="-1.60" angle="90.00" type="human" speed="4.30" pos="218.49" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="206.18" y="-1.60" angle="90.00" type="human" speed="4.72" pos="206.18" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="128.76" y="-1.60" angle="90.00" type="human" speed="10.24" pos="128.76" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="65.87" y="-1.60" angle="90.00" type="human" speed="13.35" pos="65.87" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="255.61" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="255.61" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="86.50">
+        <vehicle id="background.1" x="245.44" y="-1.60" angle="90.00" type="human" speed="4.64" pos="245.44" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="233.17" y="-1.60" angle="90.00" type="human" speed="4.42" pos="233.17" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="220.85" y="-1.60" angle="90.00" type="human" speed="4.71" pos="220.85" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="208.23" y="-1.60" angle="90.00" type="human" speed="4.11" pos="208.23" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="134.00" y="-1.60" angle="90.00" type="human" speed="10.48" pos="134.00" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="72.56" y="-1.60" angle="90.00" type="human" speed="13.40" pos="72.56" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="257.82" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="257.82" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="87.00">
+        <vehicle id="background.1" x="247.60" y="-1.60" angle="90.00" type="human" speed="4.32" pos="247.60" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="235.44" y="-1.60" angle="90.00" type="human" speed="4.55" pos="235.44" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="223.11" y="-1.60" angle="90.00" type="human" speed="4.53" pos="223.11" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="210.65" y="-1.60" angle="90.00" type="human" speed="4.82" pos="210.65" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="139.18" y="-1.60" angle="90.00" type="human" speed="10.36" pos="139.18" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="79.17" y="-1.60" angle="90.00" type="human" speed="13.22" pos="79.17" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="260.03" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="260.03" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="87.50">
+        <vehicle id="background.1" x="249.92" y="-1.60" angle="90.00" type="human" speed="4.63" pos="249.92" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="237.62" y="-1.60" angle="90.00" type="human" speed="4.35" pos="237.62" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="225.25" y="-1.60" angle="90.00" type="human" speed="4.27" pos="225.25" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="212.82" y="-1.60" angle="90.00" type="human" speed="4.35" pos="212.82" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="144.33" y="-1.60" angle="90.00" type="human" speed="10.29" pos="144.33" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="85.83" y="-1.60" angle="90.00" type="human" speed="13.32" pos="85.83" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="262.24" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="262.24" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="88.00">
+        <vehicle id="background.1" x="252.12" y="-1.60" angle="90.00" type="human" speed="4.42" pos="252.12" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="239.81" y="-1.60" angle="90.00" type="human" speed="4.39" pos="239.81" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="227.56" y="-1.60" angle="90.00" type="human" speed="4.62" pos="227.56" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="215.09" y="-1.60" angle="90.00" type="human" speed="4.53" pos="215.09" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="149.58" y="-1.60" angle="90.00" type="human" speed="10.51" pos="149.58" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="92.57" y="-1.60" angle="90.00" type="human" speed="13.47" pos="92.57" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="264.45" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.42" pos="264.45" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="88.50">
+        <vehicle id="background.1" x="254.29" y="-1.60" angle="90.00" type="human" speed="4.33" pos="254.29" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="242.13" y="-1.60" angle="90.00" type="human" speed="4.63" pos="242.13" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="229.63" y="-1.60" angle="90.00" type="human" speed="4.15" pos="229.63" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="217.47" y="-1.60" angle="90.00" type="human" speed="4.76" pos="217.47" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="154.65" y="-1.60" angle="90.00" type="human" speed="10.14" pos="154.65" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="99.28" y="-1.60" angle="90.00" type="human" speed="13.42" pos="99.28" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="266.89" y="-1.60" angle="90.00" type="ego_glosa_type" speed="4.87" pos="266.89" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="89.00">
+        <vehicle id="background.1" x="256.71" y="-1.60" angle="90.00" type="human" speed="4.85" pos="256.71" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="244.16" y="-1.60" angle="90.00" type="human" speed="4.06" pos="244.16" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="231.98" y="-1.60" angle="90.00" type="human" speed="4.70" pos="231.98" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="219.54" y="-1.60" angle="90.00" type="human" speed="4.14" pos="219.54" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="159.87" y="-1.60" angle="90.00" type="human" speed="10.44" pos="159.87" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="105.96" y="-1.60" angle="90.00" type="human" speed="13.37" pos="105.96" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="269.82" y="-1.60" angle="90.00" type="ego_glosa_type" speed="5.87" pos="269.82" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="89.50">
+        <vehicle id="background.1" x="259.52" y="-1.60" angle="90.00" type="human" speed="5.62" pos="259.52" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="246.61" y="-1.60" angle="90.00" type="human" speed="4.90" pos="246.61" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="234.00" y="-1.60" angle="90.00" type="human" speed="4.04" pos="234.00" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="221.91" y="-1.60" angle="90.00" type="human" speed="4.74" pos="221.91" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="165.15" y="-1.60" angle="90.00" type="human" speed="10.56" pos="165.15" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="112.62" y="-1.60" angle="90.00" type="human" speed="13.31" pos="112.62" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="273.26" y="-1.60" angle="90.00" type="ego_glosa_type" speed="6.87" pos="273.26" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="90.00">
+        <vehicle id="background.1" x="262.59" y="-1.60" angle="90.00" type="human" speed="6.14" pos="262.59" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="249.34" y="-1.60" angle="90.00" type="human" speed="5.46" pos="249.34" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="236.40" y="-1.60" angle="90.00" type="human" speed="4.79" pos="236.40" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="224.03" y="-1.60" angle="90.00" type="human" speed="4.25" pos="224.03" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="170.38" y="-1.60" angle="90.00" type="human" speed="10.47" pos="170.38" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="119.21" y="-1.60" angle="90.00" type="human" speed="13.17" pos="119.21" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.7" x="5.10" y="-1.60" angle="90.00" type="human" speed="13.89" pos="5.10" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="277.20" y="-1.60" angle="90.00" type="ego_glosa_type" speed="7.87" pos="277.20" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="90.50">
+        <vehicle id="background.1" x="265.97" y="-1.60" angle="90.00" type="human" speed="6.75" pos="265.97" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="252.31" y="-1.60" angle="90.00" type="human" speed="5.94" pos="252.31" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="239.12" y="-1.60" angle="90.00" type="human" speed="5.45" pos="239.12" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="226.34" y="-1.60" angle="90.00" type="human" speed="4.63" pos="226.34" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="175.59" y="-1.60" angle="90.00" type="human" speed="10.42" pos="175.59" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="125.94" y="-1.60" angle="90.00" type="human" speed="13.48" pos="125.94" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.7" x="11.86" y="-1.60" angle="90.00" type="human" speed="13.51" pos="11.86" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="281.64" y="-1.60" angle="90.00" type="ego_glosa_type" speed="8.87" pos="281.64" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="91.00">
+        <vehicle id="background.1" x="269.70" y="-1.60" angle="90.00" type="human" speed="7.47" pos="269.70" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="255.33" y="-1.60" angle="90.00" type="human" speed="6.05" pos="255.33" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="241.81" y="-1.60" angle="90.00" type="human" speed="5.37" pos="241.81" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="229.01" y="-1.60" angle="90.00" type="human" speed="5.33" pos="229.01" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="180.77" y="-1.60" angle="90.00" type="human" speed="10.36" pos="180.77" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="132.58" y="-1.60" angle="90.00" type="human" speed="13.27" pos="132.58" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.7" x="18.68" y="-1.60" angle="90.00" type="human" speed="13.66" pos="18.68" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="286.57" y="-1.60" angle="90.00" type="ego_glosa_type" speed="9.87" pos="286.57" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="91.50">
+        <vehicle id="background.1" x="273.88" y="-1.60" angle="90.00" type="human" speed="8.36" pos="273.88" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="258.73" y="-1.60" angle="90.00" type="human" speed="6.79" pos="258.73" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="244.68" y="-1.60" angle="90.00" type="human" speed="5.74" pos="244.68" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="231.47" y="-1.60" angle="90.00" type="human" speed="4.92" pos="231.47" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="186.05" y="-1.60" angle="90.00" type="human" speed="10.56" pos="186.05" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="139.35" y="-1.60" angle="90.00" type="human" speed="13.54" pos="139.35" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.7" x="25.44" y="-1.60" angle="90.00" type="human" speed="13.51" pos="25.44" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="292.01" y="-1.60" angle="90.00" type="ego_glosa_type" speed="10.87" pos="292.01" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="92.00">
+        <vehicle id="background.1" x="278.55" y="-1.60" angle="90.00" type="human" speed="9.35" pos="278.55" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="262.41" y="-1.60" angle="90.00" type="human" speed="7.36" pos="262.41" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="247.78" y="-1.60" angle="90.00" type="human" speed="6.21" pos="247.78" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="234.21" y="-1.60" angle="90.00" type="human" speed="5.47" pos="234.21" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="191.27" y="-1.60" angle="90.00" type="human" speed="10.44" pos="191.27" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="146.00" y="-1.60" angle="90.00" type="human" speed="13.31" pos="146.00" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.7" x="32.25" y="-1.60" angle="90.00" type="human" speed="13.62" pos="32.25" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="297.95" y="-1.60" angle="90.00" type="ego_glosa_type" speed="11.87" pos="297.95" lane="e0_0" slope="0.00"/>
+    </timestep>
+    <timestep time="92.50">
+        <vehicle id="background.1" x="283.66" y="-1.60" angle="90.00" type="human" speed="10.22" pos="283.66" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="266.57" y="-1.60" angle="90.00" type="human" speed="8.32" pos="266.57" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="251.18" y="-1.60" angle="90.00" type="human" speed="6.78" pos="251.18" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="237.04" y="-1.60" angle="90.00" type="human" speed="5.67" pos="237.04" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="196.44" y="-1.60" angle="90.00" type="human" speed="10.33" pos="196.44" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="152.68" y="-1.60" angle="90.00" type="human" speed="13.36" pos="152.68" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.7" x="38.95" y="-1.60" angle="90.00" type="human" speed="13.40" pos="38.95" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="304.29" y="-1.60" angle="90.00" type="ego_glosa_type" speed="12.87" pos="4.29" lane="e1_0" slope="0.00"/>
+    </timestep>
+    <timestep time="93.00">
+        <vehicle id="background.1" x="289.05" y="-1.60" angle="90.00" type="human" speed="10.78" pos="289.05" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="271.18" y="-1.60" angle="90.00" type="human" speed="9.21" pos="271.18" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="254.96" y="-1.60" angle="90.00" type="human" speed="7.56" pos="254.96" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="240.19" y="-1.60" angle="90.00" type="human" speed="6.29" pos="240.19" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="201.62" y="-1.60" angle="90.00" type="human" speed="10.37" pos="201.62" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="159.44" y="-1.60" angle="90.00" type="human" speed="13.52" pos="159.44" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.7" x="45.79" y="-1.60" angle="90.00" type="human" speed="13.69" pos="45.79" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="310.72" y="-1.60" angle="90.00" type="ego_glosa_type" speed="12.87" pos="10.72" lane="e1_0" slope="0.00"/>
+    </timestep>
+    <timestep time="93.50">
+        <vehicle id="background.1" x="294.79" y="-1.60" angle="90.00" type="human" speed="11.48" pos="294.79" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.2" x="276.28" y="-1.60" angle="90.00" type="human" speed="10.20" pos="276.28" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="259.04" y="-1.60" angle="90.00" type="human" speed="8.16" pos="259.04" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="243.60" y="-1.60" angle="90.00" type="human" speed="6.83" pos="243.60" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="206.67" y="-1.60" angle="90.00" type="human" speed="10.09" pos="206.67" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="166.20" y="-1.60" angle="90.00" type="human" speed="13.52" pos="166.20" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.7" x="52.60" y="-1.60" angle="90.00" type="human" speed="13.62" pos="52.60" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="317.16" y="-1.60" angle="90.00" type="ego_glosa_type" speed="12.87" pos="17.16" lane="e1_0" slope="0.00"/>
+    </timestep>
+    <timestep time="94.00">
+        <vehicle id="background.1" x="300.94" y="-1.60" angle="90.00" type="human" speed="12.48" pos="0.94" lane="e1_0" slope="0.00"/>
+        <vehicle id="background.2" x="281.86" y="-1.60" angle="90.00" type="human" speed="11.16" pos="281.86" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="263.48" y="-1.60" angle="90.00" type="human" speed="8.88" pos="263.48" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="247.47" y="-1.60" angle="90.00" type="human" speed="7.74" pos="247.47" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="211.91" y="-1.60" angle="90.00" type="human" speed="10.49" pos="211.91" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="172.82" y="-1.60" angle="90.00" type="human" speed="13.24" pos="172.82" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.7" x="59.38" y="-1.60" angle="90.00" type="human" speed="13.55" pos="59.38" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="323.60" y="-1.60" angle="90.00" type="ego_glosa_type" speed="12.87" pos="23.60" lane="e1_0" slope="0.00"/>
+    </timestep>
+    <timestep time="94.50">
+        <vehicle id="background.1" x="307.18" y="-1.60" angle="90.00" type="human" speed="12.49" pos="7.18" lane="e1_0" slope="0.00"/>
+        <vehicle id="background.2" x="287.65" y="-1.60" angle="90.00" type="human" speed="11.60" pos="287.65" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="268.26" y="-1.60" angle="90.00" type="human" speed="9.56" pos="268.26" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="251.70" y="-1.60" angle="90.00" type="human" speed="8.47" pos="251.70" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="217.05" y="-1.60" angle="90.00" type="human" speed="10.28" pos="217.05" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="179.42" y="-1.60" angle="90.00" type="human" speed="13.21" pos="179.42" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.7" x="66.16" y="-1.60" angle="90.00" type="human" speed="13.58" pos="66.16" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="330.04" y="-1.60" angle="90.00" type="ego_glosa_type" speed="12.87" pos="30.04" lane="e1_0" slope="0.00"/>
+    </timestep>
+    <timestep time="95.00">
+        <vehicle id="background.1" x="313.50" y="-1.60" angle="90.00" type="human" speed="12.64" pos="13.50" lane="e1_0" slope="0.00"/>
+        <vehicle id="background.2" x="293.49" y="-1.60" angle="90.00" type="human" speed="11.67" pos="293.49" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="273.54" y="-1.60" angle="90.00" type="human" speed="10.55" pos="273.54" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="256.32" y="-1.60" angle="90.00" type="human" speed="9.24" pos="256.32" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="222.31" y="-1.60" angle="90.00" type="human" speed="10.51" pos="222.31" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="186.10" y="-1.60" angle="90.00" type="human" speed="13.36" pos="186.10" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.7" x="73.02" y="-1.60" angle="90.00" type="human" speed="13.71" pos="73.02" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="336.47" y="-1.60" angle="90.00" type="ego_glosa_type" speed="12.87" pos="36.47" lane="e1_0" slope="0.00"/>
+    </timestep>
+    <timestep time="95.50">
+        <vehicle id="background.1" x="319.82" y="-1.60" angle="90.00" type="human" speed="12.64" pos="19.82" lane="e1_0" slope="0.00"/>
+        <vehicle id="background.2" x="299.19" y="-1.60" angle="90.00" type="human" speed="11.39" pos="299.19" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.3" x="279.07" y="-1.60" angle="90.00" type="human" speed="11.07" pos="279.07" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="261.20" y="-1.60" angle="90.00" type="human" speed="9.76" pos="261.20" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="227.44" y="-1.60" angle="90.00" type="human" speed="10.26" pos="227.44" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="192.88" y="-1.60" angle="90.00" type="human" speed="13.56" pos="192.88" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.7" x="79.77" y="-1.60" angle="90.00" type="human" speed="13.51" pos="79.77" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="342.91" y="-1.60" angle="90.00" type="ego_glosa_type" speed="12.87" pos="42.91" lane="e1_0" slope="0.00"/>
+    </timestep>
+    <timestep time="96.00">
+        <vehicle id="background.1" x="325.96" y="-1.60" angle="90.00" type="human" speed="12.28" pos="25.96" lane="e1_0" slope="0.00"/>
+        <vehicle id="background.2" x="304.91" y="-1.60" angle="90.00" type="human" speed="11.65" pos="4.91" lane="e1_0" slope="0.00"/>
+        <vehicle id="background.3" x="284.87" y="-1.60" angle="90.00" type="human" speed="11.59" pos="284.87" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="266.46" y="-1.60" angle="90.00" type="human" speed="10.51" pos="266.46" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="232.68" y="-1.60" angle="90.00" type="human" speed="10.49" pos="232.68" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="199.55" y="-1.60" angle="90.00" type="human" speed="13.34" pos="199.55" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.7" x="86.48" y="-1.60" angle="90.00" type="human" speed="13.42" pos="86.48" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.8" x="5.10" y="-1.60" angle="90.00" type="human" speed="13.89" pos="5.10" lane="e0_0" slope="0.00"/>
+        <vehicle id="ego" x="349.35" y="-1.60" angle="90.00" type="ego_glosa_type" speed="12.87" pos="49.35" lane="e1_0" slope="0.00"/>
+    </timestep>
+    <timestep time="96.50">
+        <vehicle id="background.1" x="332.18" y="-1.60" angle="90.00" type="human" speed="12.44" pos="32.18" lane="e1_0" slope="0.00"/>
+        <vehicle id="background.2" x="310.61" y="-1.60" angle="90.00" type="human" speed="11.41" pos="10.61" lane="e1_0" slope="0.00"/>
+        <vehicle id="background.3" x="290.72" y="-1.60" angle="90.00" type="human" speed="11.71" pos="290.72" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.4" x="272.16" y="-1.60" angle="90.00" type="human" speed="11.40" pos="272.16" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.5" x="237.79" y="-1.60" angle="90.00" type="human" speed="10.22" pos="237.79" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.6" x="206.37" y="-1.60" angle="90.00" type="human" speed="13.64" pos="206.37" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.7" x="93.36" y="-1.60" angle="90.00" type="human" speed="13.77" pos="93.36" lane="e0_0" slope="0.00"/>
+        <vehicle id="background.8" x="11.83" y="-1.60" angle="90.00" type="human" speed="13.47" pos="11.83" lane="e0_0" slope="0.00"/>
+    </timestep>
+</fcd-export>
