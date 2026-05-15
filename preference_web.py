@@ -330,6 +330,13 @@ function finite(value) {
   return Number.isFinite(value);
 }
 
+function isRlSegment(segment) {
+  const source = typeof segment.source === "string" ? segment.source : "";
+  if (source.startsWith("rl-")) return true;
+  const id = typeof segment.id === "string" ? segment.id : "";
+  return id.includes("rl-policy") || id.includes("rl-random");
+}
+
 function signalColor(time) {
   return (time % 90) < 45 ? "#2ca02c" : "#d62728";
 }
@@ -840,7 +847,7 @@ function drawRoadKinematicsChart(panel, segment, currentTime) {
   ctx.fillText("v", speedTrack.x - 28, speedTrack.y + 25);
   ctx.fillStyle = "#9467bd";
   ctx.fillText("a", accelTrack.x - 28, accelTrack.y + 25);
-  const isRlSegment = segment.id.startsWith("rl-");
+  const rlSegment = isRlSegment(segment);
 
   ctx.fillStyle = "#6b7280";
   ctx.font = "10px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
@@ -853,15 +860,15 @@ function drawRoadKinematicsChart(panel, segment, currentTime) {
   ctx.font = "10px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
   ctx.textAlign = "left";
   ctx.fillStyle = "#9467bd";
-  ctx.fillText(isRlSegment ? "cmd" : "accel", accelTrack.x + accelTrack.w - 54, accelTrack.y + 10);
-  if (isRlSegment) {
+  ctx.fillText(rlSegment ? "cmd" : "accel", accelTrack.x + accelTrack.w - 54, accelTrack.y + 10);
+  if (rlSegment) {
     ctx.fillStyle = "#f97316";
     ctx.fillText("actual", accelTrack.x + accelTrack.w - 54, accelTrack.y + 24);
   }
 
   drawMiniChartSeries(chart, speedTrack, segment, segment.speed, speedLimits, currentTime, "#1f77b4");
   drawMiniChartSeries(chart, accelTrack, segment, segment.action, accelLimits, currentTime, "#9467bd", true);
-  if (isRlSegment && segment.actualAccel) {
+  if (rlSegment && segment.actualAccel) {
     drawMiniChartSeries(
       chart,
       accelTrack,
@@ -928,10 +935,10 @@ function drawRoadMetrics(segment, panel, currentTime) {
   const action = stepValueAt(segment.time, segment.action, currentTime);
   const frontGap = interpolateAt(segment.time, segment.frontGap, currentTime);
   const rearGap = interpolateAt(segment.time, segment.rearGap, currentTime);
-  const isRlSegment = segment.id.startsWith("rl-");
+  const rlSegment = isRlSegment(segment);
   const items = [
     ["speed", speed, "m/s"],
-    [isRlSegment ? "cmd accel" : "accel", action, "m/s²"],
+    [rlSegment ? "cmd accel" : "accel", action, "m/s²"],
     ["front gap", frontGap, "m"],
     ["rear gap", rearGap, "m"],
   ];

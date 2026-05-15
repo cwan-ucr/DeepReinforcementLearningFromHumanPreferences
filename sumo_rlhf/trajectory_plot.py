@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt
 from matplotlib import animation
 import numpy as np
 
+from sumo_rlhf.preference_sampling import segment_source
 from sumo_rlhf.trajectory_buffer import TrajectorySegment
 
 
@@ -380,6 +381,7 @@ def segment_animation_payload(
 
     return {
         "id": segment.segment_id,
+        "source": segment_source(segment),
         "episode": int(segment.episode_id),
         "window": [float(window[0]), float(window[1])],
         "time": t[in_window].astype(float).tolist(),

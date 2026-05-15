@@ -3,6 +3,8 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+import numpy as np
+
 from sumo_rlhf.fcd import load_fcd_trajectories
 from sumo_rlhf.ppo_agent import PPOAgent, PPOConfig
 from sumo_rlhf.reward_model import load_reward_checkpoint
@@ -16,8 +18,8 @@ def parse_args():
     )
     parser.add_argument("--sumo-cfg", required=True, help="Path to the SUMO .sumocfg file.")
     parser.add_argument("--ego-id", default="ego", help="SUMO vehicle id controlled by the agent.")
-    parser.add_argument("--episodes", type=int, default=20)
-    parser.add_argument("--max-steps", type=int, default=300)
+    parser.add_argument("--episodes", type=int, default=1)
+    parser.add_argument("--max-steps", type=int, default=200)
     parser.add_argument("--step-length", type=float, default=0.5)
     parser.add_argument("--segment-length", type=int, default=10)
     parser.add_argument(
@@ -57,6 +59,11 @@ def parse_args():
         help="Use the same SUMO seed for every episode instead of seed+episode.",
     )
     parser.add_argument("--gui", action="store_true")
+    parser.add_argument(
+        "--disable-action-mask",
+        action="store_true",
+        help="Disable safety action mask and sample over the full discrete action set.",
+    )
     return parser.parse_args()
 
 
@@ -132,10 +139,20 @@ def main():
                 total_reward = 0.0
 
                 for _ in range(args.max_steps):
+                    action_mask = None
+                    mask_limits = None
+                    if not args.disable_action_mask:
+                        action_mask, mask_limits = env.get_action_mask()
                     if reward_model is not None:
-                        action, log_prob, value = agent.act(obs)
+                        action, log_prob, value = agent.act(obs, action_mask=action_mask)
                     else:
-                        action = int(env.action_space.sample())
+                        if action_mask is None:
+                            action = int(env.action_space.sample())
+                        else:
+                            valid_actions = [idx for idx, ok in enumerate(action_mask) if ok]
+                            action = int(valid_actions[0]) if len(valid_actions) == 1 else int(
+                                valid_actions[int(np.random.randint(len(valid_actions)))]
+                            )
                         log_prob = 0.0
                         value = 0.0
                     next_obs, _env_reward, done, info = env.step(action)
@@ -147,12 +164,26 @@ def main():
                         reward = reward_model.predict_step_reward(obs.tolist(), action_value)
 
                     if reward_model is not None:
-                        agent.remember(obs, action, log_prob, value, reward, done)
+                        agent.remember(
+                            obs,
+                            action,
+                            log_prob,
+                            value,
+                            reward,
+                            done,
+                            action_mask=action_mask,
+                        )
 
                     source = "rl-policy" if reward_model is not None else "rl-random"
                     info["source"] = source
                     info["scenario_episode_id"] = episode
                     info["policy_rollout_index"] = rollout_index
+                    if action_mask is not None:
+                        info["action_mask"] = [int(x) for x in action_mask.tolist()]
+                    if mask_limits is not None:
+                        info["mask_speed_cap"] = float(mask_limits["speed_cap"])
+                        info["mask_min_allowed_accel"] = float(mask_limits["min_allowed_accel"])
+                        info["mask_max_allowed_accel"] = float(mask_limits["max_allowed_accel"])
 
                     episode_steps.append(
                         StepRecord(

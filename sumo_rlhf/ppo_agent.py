@@ -52,6 +52,7 @@ class PPORolloutBuffer:
         self.values: List[float] = []
         self.rewards: List[float] = []
         self.dones: List[bool] = []
+        self.action_masks: List[np.ndarray] = []
 
     def add(
         self,
@@ -61,6 +62,7 @@ class PPORolloutBuffer:
         value: float,
         reward: float,
         done: bool,
+        action_mask: np.ndarray | None = None,
     ):
         self.obs.append(np.asarray(obs, dtype=np.float32).copy())
         self.actions.append(int(action))
@@ -68,6 +70,9 @@ class PPORolloutBuffer:
         self.values.append(float(value))
         self.rewards.append(float(reward))
         self.dones.append(bool(done))
+        if action_mask is None:
+            raise ValueError("action_mask must be provided for PPO rollouts.")
+        self.action_masks.append(np.asarray(action_mask, dtype=np.float32).copy())
 
     def clear(self):
         self.obs.clear()
@@ -76,6 +81,7 @@ class PPORolloutBuffer:
         self.values.clear()
         self.rewards.clear()
         self.dones.clear()
+        self.action_masks.clear()
 
     def __len__(self) -> int:
         return len(self.rewards)
@@ -102,10 +108,15 @@ class PPOAgent:
         self.last_entropy: float | None = None
 
     @torch.no_grad()
-    def act(self, obs: np.ndarray) -> tuple[int, float, float]:
+    def act(
+        self, obs: np.ndarray, action_mask: np.ndarray | None = None
+    ) -> tuple[int, float, float]:
         self.model.eval()
         obs_t = torch.tensor(np.asarray([obs]), dtype=torch.float32)
         logits, value = self.model(obs_t)
+        if action_mask is not None:
+            mask_t = torch.tensor(np.asarray([action_mask]), dtype=torch.bool)
+            logits = logits.masked_fill(~mask_t, -1e9)
         dist = Categorical(logits=logits)
         action = dist.sample()
         log_prob = dist.log_prob(action)
@@ -119,8 +130,11 @@ class PPOAgent:
         value: float,
         reward: float,
         done: bool,
+        action_mask: np.ndarray | None = None,
     ):
-        self.rollout.add(obs, action, log_prob, value, reward, done)
+        if action_mask is None:
+            action_mask = np.ones(self.action_count, dtype=np.float32)
+        self.rollout.add(obs, action, log_prob, value, reward, done, action_mask)
 
     def save(self, path: str | Path):
         path = Path(path)
@@ -160,6 +174,9 @@ class PPOAgent:
         obs_t = torch.tensor(np.asarray(self.rollout.obs), dtype=torch.float32)
         actions_t = torch.tensor(self.rollout.actions, dtype=torch.int64)
         old_log_probs_t = torch.tensor(self.rollout.log_probs, dtype=torch.float32)
+        action_masks_t = torch.tensor(
+            np.asarray(self.rollout.action_masks), dtype=torch.bool
+        )
         old_values = np.asarray(self.rollout.values + [float(next_value)], dtype=np.float32)
         rewards = np.asarray(self.rollout.rewards, dtype=np.float32)
         dones = np.asarray(self.rollout.dones, dtype=np.float32)
@@ -197,6 +214,7 @@ class PPOAgent:
                 batch_idx_t = torch.tensor(batch_idx, dtype=torch.int64)
 
                 logits, values = self.model(obs_t[batch_idx_t])
+                logits = logits.masked_fill(~action_masks_t[batch_idx_t], -1e9)
                 dist = Categorical(logits=logits)
                 log_probs = dist.log_prob(actions_t[batch_idx_t])
                 entropy = dist.entropy().mean()

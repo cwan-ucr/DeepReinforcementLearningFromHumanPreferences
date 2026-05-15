@@ -126,7 +126,8 @@ class SumoEgoEnv(gym.Env):
 
         action = int(action)
         accel = float(self.config.action_accels[action])
-        self._apply_acceleration(accel)
+        speed_limits = self._compute_speed_limits()
+        self._apply_acceleration(accel, speed_limits=speed_limits)
         self._traci.simulationStep()
         self._steps += 1
         self._prev_action = accel
@@ -143,6 +144,9 @@ class SumoEgoEnv(gym.Env):
         self._last_obs = obs.copy()
         info = {
             **self._current_info(accel, arrived),
+            "safe_ref_speed": float(speed_limits["speed_cap"]),
+            "min_safe_accel": float(speed_limits["min_allowed_accel"]),
+            "max_safe_accel": float(speed_limits["max_allowed_accel"]),
             "timeout": timeout,
         }
         return obs, 0.0, done, info
@@ -315,13 +319,72 @@ class SumoEgoEnv(gym.Env):
             f"{self.config.max_depart_delay_steps} simulation steps."
         )
 
-    def _apply_acceleration(self, accel: float):
+    def _apply_acceleration(self, accel: float, speed_limits: Optional[Dict[str, float]] = None):
+        if speed_limits is None:
+            speed_limits = self._compute_speed_limits()
+        speed = float(speed_limits["ego_speed"])
+        speed_cap = float(speed_limits["speed_cap"])
+        next_speed = np.clip(speed + accel * self.config.step_length, 0.0, speed_cap)
+        self._traci.vehicle.setSpeed(self.config.ego_id, float(next_speed))
+
+    def _compute_speed_limits(self) -> Dict[str, float]:
         ego_id = self.config.ego_id
         speed = float(self._traci.vehicle.getSpeed(ego_id))
         allowed_speed = float(self._traci.vehicle.getAllowedSpeed(ego_id))
-        speed_cap = min(allowed_speed, self.config.max_speed)
-        next_speed = np.clip(speed + accel * self.config.step_length, 0.0, speed_cap)
-        self._traci.vehicle.setSpeed(ego_id, float(next_speed))
+
+        safe_follow_speed = allowed_speed
+        leader_info = self._traci.vehicle.getLeader(ego_id, 200)
+        if leader_info is not None:
+            leader_id, gap = leader_info
+            if leader_id not in ("", None):
+                leader_speed = self._traci.vehicle.getSpeed(leader_id)
+                leader_max_decel = self._traci.vehicle.getDecel(leader_id)
+                safe_follow_speed = self._traci.vehicle.getFollowSpeed(
+                    ego_id, speed, gap, leader_speed, leader_max_decel, leader_id
+                )
+
+        safe_tls_speed = allowed_speed
+        tls_info = self._traci.vehicle.getNextTLS(ego_id)
+        if tls_info:
+            _tls_id, _tls_link_index, tls_dist, tls_state = tls_info[0]
+            if tls_state in ["r", "R", "y", "Y"]:
+                safe_tls_speed = self._traci.vehicle.getStopSpeed(ego_id, speed, tls_dist)
+
+        if not np.isfinite(safe_follow_speed):
+            safe_follow_speed = allowed_speed
+        if not np.isfinite(safe_tls_speed):
+            safe_tls_speed = allowed_speed
+        final_safe_speed = min(float(safe_follow_speed), float(safe_tls_speed), allowed_speed)
+        final_safe_speed = max(0.0, final_safe_speed)
+        speed_cap = min(allowed_speed, self.config.max_speed, final_safe_speed)
+        min_allowed_accel = (0.0 - speed) / max(float(self.config.step_length), 1e-6)
+        max_allowed_accel = (speed_cap - speed) / max(float(self.config.step_length), 1e-6)
+        return {
+            "ego_speed": float(speed),
+            "allowed_speed": float(allowed_speed),
+            "safe_follow_speed": float(safe_follow_speed),
+            "safe_tls_speed": float(safe_tls_speed),
+            "speed_cap": float(speed_cap),
+            "min_allowed_accel": float(min_allowed_accel),
+            "max_allowed_accel": float(max_allowed_accel),
+        }
+
+    def get_action_mask(self) -> Tuple[np.ndarray, Dict[str, float]]:
+        if self._traci is None:
+            raise RuntimeError("Call reset() before get_action_mask().")
+        limits = self._compute_speed_limits()
+        min_allowed_accel = float(limits["min_allowed_accel"])
+        max_allowed_accel = float(limits["max_allowed_accel"])
+        accels = np.asarray(self.config.action_accels, dtype=np.float32)
+        eps = 1e-6
+        mask = (accels >= (min_allowed_accel - eps)) & (accels <= (max_allowed_accel + eps))
+        if not np.any(mask):
+            # Fallback for coarse discrete grids: keep the action closest to feasible interval.
+            projected = np.clip(accels, min_allowed_accel, max_allowed_accel)
+            closest = int(np.argmin(np.abs(accels - projected)))
+            mask = np.zeros_like(mask, dtype=bool)
+            mask[closest] = True
+        return mask.astype(bool), limits
 
     def _get_observation(self) -> np.ndarray:
         raw = self._get_raw_observation_array()
