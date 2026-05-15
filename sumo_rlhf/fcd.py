@@ -27,7 +27,7 @@ def load_fcd_trajectories(
             if not veh_id or veh_id == ego_id:
                 continue
             # This generated scenario is a straight eastbound road, so FCD x is
-            # the same longitudinal road position used in the trajectory plots.
+            # the longitudinal front-bumper position used by the road view.
             position = float(vehicle.attrib.get("x", "nan"))
             speed = float(vehicle.attrib.get("speed", "nan"))
             length = float(vehicle.attrib.get("length", "5.0"))

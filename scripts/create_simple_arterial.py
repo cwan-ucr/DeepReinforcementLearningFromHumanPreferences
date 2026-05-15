@@ -71,7 +71,7 @@ def create_routes(
     if use_glosa:
         glosa_params = """
             <param key="has.glosa.device" value="true"/>
-            <param key="device.glosa.range" value="300"/>
+            <param key="device.glosa.range" value="100"/>
             <param key="device.glosa.min-speed" value="2.0"/>
             <param key="device.glosa.max-speedfactor" value="1.1"/>
             <param key="device.glosa.add-switchtime" value="2.0"/>"""
@@ -79,9 +79,9 @@ def create_routes(
     return f"""
 <routes>
     <vType id="human" accel="2.0" decel="4.5" sigma="0.5" length="5.0"
-           minGap="2.5" maxSpeed="{speed:.2f}" carFollowModel="Krauss"/>
+           minGap="2.5" maxSpeed="{speed:.2f}" speedFactor="1.0" carFollowModel="Krauss"/>
     <vType id="{ego_type}" accel="2.0" decel="4.5" sigma="0.0" length="5.0"
-           minGap="2.5" maxSpeed="{speed:.2f}" carFollowModel="Krauss">{glosa_params}
+           minGap="2.5" maxSpeed="{speed:.2f}" speedFactor="1.0" carFollowModel="Krauss">{glosa_params}
     </vType>
 
     <route id="arterial_route" edges="{edges}"/>

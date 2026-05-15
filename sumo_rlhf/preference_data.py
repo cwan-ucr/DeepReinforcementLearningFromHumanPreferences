@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Dict, List
 
 import json
+import sys
 
 from sumo_rlhf.reward_model import PreferenceExample
 from sumo_rlhf.trajectory_buffer import TrajectoryBuffer, iter_step_features
@@ -35,6 +36,7 @@ def load_preference_labels(path: str | Path) -> List[PreferenceLabel]:
 def load_preference_examples(
     segments_path: str | Path,
     preferences_path: str | Path,
+    strict: bool = True,
 ) -> List[PreferenceExample]:
     buffer = TrajectoryBuffer.load_jsonl(segments_path)
     segment_by_id: Dict[str, object] = {
@@ -60,10 +62,13 @@ def load_preference_examples(
         sample = ", ".join(
             f"({item.left_id}, {item.right_id})" for item in missing[:5]
         )
-        raise KeyError(
+        message = (
             f"{len(missing)} preference labels reference segment ids that are not "
             f"in {segments_path}. First missing pairs: {sample}. "
             "Use the same preference_pool.jsonl that was used during labeling, "
             "or filter/relabel preferences after regenerating the pool."
         )
+        if strict:
+            raise KeyError(message)
+        print(f"warning: skipped stale preference labels: {message}", file=sys.stderr)
     return examples

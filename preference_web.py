@@ -9,9 +9,12 @@ from pathlib import Path
 from urllib.parse import parse_qs
 
 from sumo_rlhf.preference_data import PreferenceLabel, append_preference
+from sumo_rlhf.metrics import compact_metric_cards
 from sumo_rlhf.preference_sampling import (
     format_segment_summary,
+    parse_source_pair_weights,
     sample_matched_pair,
+    sample_weighted_source_pair,
     segment_start_position,
     segment_start_time,
     segment_source,
@@ -40,27 +43,35 @@ def parse_args():
         "--animation-window-seconds",
         type=float,
         default=10.0,
-        help="Fixed time-window length shown in animated comparisons.",
+        help="Fixed time-window length shown in animated comparisons. Use <=0 to show the full trajectory segment.",
     )
     parser.add_argument("--animation-fps", type=int, default=4)
     parser.add_argument(
         "--playback-speed",
         type=float,
-        default=1.5,
+        default=5.0,
         help="Browser playback speed multiplier for road/curve animations.",
     )
     parser.add_argument("--match-position-tol", type=float, default=30.0)
     parser.add_argument("--match-time-tol", type=float, default=20.0)
     parser.add_argument(
         "--match-mode",
-        choices=["time", "position", "both", "random"],
-        default="time",
+        choices=["episode", "scene", "time", "position", "both", "random"],
+        default="scene",
         help="How candidate pairs are matched before preference labeling.",
     )
     parser.add_argument(
         "--allow-same-source",
         action="store_true",
         help="Allow pairs from the same source even when different-source pairs exist.",
+    )
+    parser.add_argument(
+        "--source-pair-weights",
+        default=None,
+        help=(
+            "Optional weighted source-pair schedule such as "
+            "'rl-policy:rl-policy:0.65,rl-policy:glosa:0.12,glosa:sumo-default:0.03'."
+        ),
     )
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8765)
@@ -83,26 +94,46 @@ class PreferenceWebApp:
         self.current_payload = None
         self.current_matched = False
         self.label_count = 0
+        self.source_pair_weights = parse_source_pair_weights(args.source_pair_weights)
         self.next_pair()
 
     def next_pair(self):
-        left, right, matched = sample_matched_pair(
-            self.buffer.segments,
-            position_tol=self.args.match_position_tol,
-            time_tol=self.args.match_time_tol,
-            match_mode=self.args.match_mode,
-            prefer_different_source=not self.args.allow_same_source,
-        )
+        if self.source_pair_weights:
+            left, right, matched = sample_weighted_source_pair(
+                self.buffer.segments,
+                self.source_pair_weights,
+                position_tol=self.args.match_position_tol,
+                time_tol=self.args.match_time_tol,
+                match_mode=self.args.match_mode,
+            )
+        else:
+            left, right, matched = sample_matched_pair(
+                self.buffer.segments,
+                position_tol=self.args.match_position_tol,
+                time_tol=self.args.match_time_tol,
+                match_mode=self.args.match_mode,
+                prefer_different_source=not self.args.allow_same_source,
+            )
         self.current_pair = (left, right)
         self.current_matched = matched
+        window_seconds = (
+            None
+            if self.args.animation_window_seconds <= 0
+            else float(self.args.animation_window_seconds)
+        )
+        left_payload = segment_animation_payload(left, window_seconds=window_seconds)
+        right_payload = segment_animation_payload(right, window_seconds=window_seconds)
+        playback_window_seconds = max(
+            left_payload["window"][1] - left_payload["window"][0],
+            right_payload["window"][1] - right_payload["window"][0],
+            1.0,
+        )
         self.current_payload = {
-            "left": segment_animation_payload(
-                left, window_seconds=self.args.animation_window_seconds
-            ),
-            "right": segment_animation_payload(
-                right, window_seconds=self.args.animation_window_seconds
-            ),
-            "windowSeconds": float(self.args.animation_window_seconds),
+            "left": left_payload,
+            "right": right_payload,
+            "leftMetrics": compact_metric_cards(left),
+            "rightMetrics": compact_metric_cards(right),
+            "windowSeconds": float(playback_window_seconds),
             "playbackSpeed": float(self.args.playback_speed),
             "mode": self.args.media,
         }
@@ -117,7 +148,7 @@ class PreferenceWebApp:
                 left,
                 right,
                 self.current_plot,
-                window_seconds=self.args.animation_window_seconds,
+                window_seconds=playback_window_seconds,
                 fps=self.args.animation_fps,
             )
         else:
@@ -231,6 +262,10 @@ def make_handler(app: PreferenceWebApp):
                   <div>{html.escape(format_segment_summary("RIGHT", right))}</div>
                   <div>pair match: {match_status}, mode={app.args.match_mode}, source={source_pair}, Δpos={pos_delta:.1f}m, Δtime={time_delta:.1f}s</div>
                 </section>
+                <section class="metrics">
+                  {self._metric_cards("LEFT", app.current_payload["leftMetrics"])}
+                  {self._metric_cards("RIGHT", app.current_payload["rightMetrics"])}
+                </section>
                 {media_html}
                 <form method="post" class="actions">
                   <button name="preference" value="0" class="left" autofocus>左边更好</button>
@@ -255,6 +290,23 @@ def make_handler(app: PreferenceWebApp):
               {animation_script}
             </body>
             </html>
+            """
+
+        def _metric_cards(self, title, metrics):
+            cards = "\n".join(
+                f"""
+                <div class="metric-card">
+                  <span>{html.escape(item["label"])}</span>
+                  <strong>{html.escape(item["value"])}</strong>
+                </div>
+                """
+                for item in metrics
+            )
+            return f"""
+            <div class="metric-group">
+              <div class="metric-title">{html.escape(title)}</div>
+              <div class="metric-grid">{cards}</div>
+            </div>
             """
 
     return Handler
@@ -465,6 +517,12 @@ function interpolateAt(times, values, time) {
   return finite(last) ? last : null;
 }
 
+function interpolateAtIfPresent(times, values, time) {
+  if (!times || times.length === 0) return null;
+  if (time < times[0] || time > times[times.length - 1]) return null;
+  return interpolateAt(times, values, time);
+}
+
 function stepValueAt(times, values, time) {
   if (!times || times.length === 0) return null;
   let lastValue = null;
@@ -490,11 +548,28 @@ function roadLimits(segment) {
   return [Math.max(0, low), high];
 }
 
+function vehicleCenterFromFront(frontPosition, lengthMeters = 5.0) {
+  if (!finite(frontPosition)) return NaN;
+  return frontPosition - Math.max(0, lengthMeters) / 2;
+}
+
+function egoCenteredRoadLimits(egoFrontPosition, egoLengthMeters = 5.0) {
+  if (!finite(egoFrontPosition)) return null;
+  const egoCenterPosition = vehicleCenterFromFront(egoFrontPosition, egoLengthMeters);
+  return [egoCenterPosition - 50, egoCenterPosition + 50];
+}
+
+function vehicleOverlapsLimits(frontPosition, lengthMeters, limits) {
+  if (!finite(frontPosition)) return false;
+  const rearPosition = frontPosition - Math.max(0, lengthMeters || 5.0);
+  return frontPosition >= limits[0] && rearPosition <= limits[1];
+}
+
 function mapRoadX(panel, limits, position) {
   return panel.x + ((position - limits[0]) / (limits[1] - limits[0])) * panel.w;
 }
 
-function drawRoadGrid(panel, limits) {
+function drawRoadGrid(panel, limits, egoCenterPosition = null) {
   ctx.fillStyle = "#f8fafc";
   ctx.fillRect(panel.x, panel.y, panel.w, panel.h);
   ctx.strokeStyle = "#d1d5db";
@@ -517,17 +592,36 @@ function drawRoadGrid(panel, limits) {
   ctx.fillStyle = "#6b7280";
   ctx.font = "12px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
   ctx.textAlign = "center";
-  const tickStep = 50;
-  const firstTick = Math.ceil(limits[0] / tickStep) * tickStep;
-  for (let pos = firstTick; pos <= limits[1]; pos += tickStep) {
-    const x = mapRoadX(panel, limits, pos);
+  const ticks = finite(egoCenterPosition)
+    ? [-50, -25, 0, 25, 50].map((offset) => ({
+        position: egoCenterPosition + offset,
+        label: offset === 0 ? "ego" : (offset > 0 ? "+" : "") + offset.toFixed(0) + "m",
+      }))
+    : (() => {
+        const tickStep = 50;
+        const firstTick = Math.ceil(limits[0] / tickStep) * tickStep;
+        const items = [];
+        for (let pos = firstTick; pos <= limits[1]; pos += tickStep) {
+          items.push({ position: pos, label: pos.toFixed(0) + "m" });
+        }
+        return items;
+      })();
+  for (const tick of ticks) {
+    const x = mapRoadX(panel, limits, tick.position);
     ctx.strokeStyle = "rgba(17, 24, 39, 0.18)";
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(x, roadY + roadH / 2 + 4);
     ctx.lineTo(x, roadY + roadH / 2 + 14);
     ctx.stroke();
-    ctx.fillText(pos.toFixed(0) + "m", x, roadY + roadH / 2 + 30);
+    if (x < panel.x + 18) {
+      ctx.textAlign = "left";
+    } else if (x > panel.x + panel.w - 18) {
+      ctx.textAlign = "right";
+    } else {
+      ctx.textAlign = "center";
+    }
+    ctx.fillText(tick.label, x, roadY + roadH / 2 + 30);
   }
   return { roadY, roadH };
 }
@@ -601,6 +695,64 @@ function drawSignalPhaseBar(panel, currentTime) {
   ctx.fillStyle = state === "green" ? "#166534" : "#991b1b";
   ctx.textAlign = "right";
   ctx.fillText(state + " " + phase.toFixed(1) + "s", x + barW, y - 8);
+}
+
+function drawIntersectionOverview(panel, segment, egoFrontPosition, currentTime) {
+  const signalPosition = segment.signals && segment.signals.length ? segment.signals[0] : 300;
+  const routeEnd = Math.max(350, signalPosition + 50);
+  const boxW = Math.min(240, panel.w * 0.40);
+  const boxH = 52;
+  const x = panel.x + panel.w - boxW - 12;
+  const y = panel.y + 104;
+  const lineY = y + 27;
+  const mapXGlobal = (position) => x + (position / routeEnd) * boxW;
+
+  ctx.fillStyle = "rgba(249, 250, 251, 0.96)";
+  ctx.fillRect(x, y, boxW, boxH);
+  ctx.strokeStyle = "#d1d5db";
+  ctx.lineWidth = 1;
+  ctx.strokeRect(x, y, boxW, boxH);
+
+  ctx.strokeStyle = "#9ca3af";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(x + 10, lineY);
+  ctx.lineTo(x + boxW - 10, lineY);
+  ctx.stroke();
+
+  const signalX = mapXGlobal(signalPosition);
+  ctx.strokeStyle = "#111827";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(signalX, lineY - 13);
+  ctx.lineTo(signalX, lineY + 13);
+  ctx.stroke();
+  ctx.fillStyle = signalColor(currentTime);
+  ctx.beginPath();
+  ctx.arc(signalX, lineY - 17, 5, 0, Math.PI * 2);
+  ctx.fill();
+
+  if (finite(egoFrontPosition)) {
+    const egoX = mapXGlobal(Math.max(0, Math.min(routeEnd, egoFrontPosition)));
+    ctx.fillStyle = "#2563eb";
+    ctx.strokeStyle = "#0f172a";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(egoX, lineY, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = "#1d4ed8";
+    ctx.font = "10px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("front " + egoFrontPosition.toFixed(1) + "m", egoX, y + boxH - 8);
+  }
+
+  ctx.fillStyle = "#374151";
+  ctx.font = "10px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
+  ctx.textAlign = "left";
+  ctx.fillText("intersection position", x + 6, y + 12);
+  ctx.textAlign = "right";
+  ctx.fillText("signal " + signalPosition.toFixed(0) + "m", x + boxW - 6, y + 12);
 }
 
 function mapMiniChartX(chart, segment, time) {
@@ -732,24 +884,33 @@ function drawRoadKinematicsChart(panel, segment, currentTime) {
   ctx.stroke();
 }
 
-function drawVehicleRoad(panel, limits, position, y, color, label, isEgo = false, lengthMeters = 5.0) {
-  if (!finite(position) || position < limits[0] || position > limits[1]) return;
-  const x = mapRoadX(panel, limits, position);
-  const length = Math.max(8, (lengthMeters / (limits[1] - limits[0])) * panel.w);
+function drawVehicleRoad(panel, limits, frontPosition, y, color, label, isEgo = false, lengthMeters = 5.0) {
+  lengthMeters = Math.max(0.1, lengthMeters || 5.0);
+  if (!vehicleOverlapsLimits(frontPosition, lengthMeters, limits)) return;
+  const frontX = mapRoadX(panel, limits, frontPosition);
+  const rearX = mapRoadX(panel, limits, frontPosition - lengthMeters);
+  const leftX = Math.min(rearX, frontX);
+  const length = Math.max(2, Math.abs(frontX - rearX));
+  const centerX = (rearX + frontX) / 2;
   const height = isEgo ? 18 : 14;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(panel.x, panel.y, panel.w, panel.h);
+  ctx.clip();
   ctx.fillStyle = color;
   ctx.strokeStyle = isEgo ? "#0f172a" : "#6b7280";
   ctx.lineWidth = isEgo ? 1.8 : 1;
   ctx.beginPath();
-  ctx.roundRect(x - length / 2, y - height / 2, length, height, 4);
+  ctx.roundRect(leftX, y - height / 2, length, height, 4);
   ctx.fill();
   ctx.stroke();
 
   ctx.fillStyle = "rgba(255, 255, 255, 0.72)";
+  const arrowBaseX = frontX - Math.min(8, length * 0.45);
   ctx.beginPath();
-  ctx.moveTo(x + length / 2 - 2, y);
-  ctx.lineTo(x + length / 2 - Math.min(8, length * 0.45), y - 4);
-  ctx.lineTo(x + length / 2 - Math.min(8, length * 0.45), y + 4);
+  ctx.moveTo(frontX - 2, y);
+  ctx.lineTo(arrowBaseX, y - 4);
+  ctx.lineTo(arrowBaseX, y + 4);
   ctx.closePath();
   ctx.fill();
 
@@ -757,8 +918,9 @@ function drawVehicleRoad(panel, limits, position, y, color, label, isEgo = false
     ctx.fillStyle = isEgo ? "#1d4ed8" : "#4b5563";
     ctx.font = isEgo ? "13px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" : "11px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText(label, x, y - height / 2 - 6);
+    ctx.fillText(label, centerX, y - height / 2 - 6);
   }
+  ctx.restore();
 }
 
 function drawRoadMetrics(segment, panel, currentTime) {
@@ -796,8 +958,11 @@ function drawRoadMetrics(segment, panel, currentTime) {
 function drawRoadSegment(segment, x, y, w, h, title, elapsed) {
   const panel = { x: x + 10, y: y + 34, w: w - 20, h: h - 44 };
   const currentTime = Math.min(segment.window[0] + elapsed, segment.window[1]);
-  const limits = roadLimits(segment);
-  const { roadY, roadH } = drawRoadGrid(panel, limits);
+  const egoLength = segment.vehicleLength || 5.0;
+  const egoFrontPosition = interpolateAt(segment.time, segment.position, currentTime);
+  const egoCenterPosition = vehicleCenterFromFront(egoFrontPosition, egoLength);
+  const limits = egoCenteredRoadLimits(egoFrontPosition, egoLength) || roadLimits(segment);
+  const { roadY, roadH } = drawRoadGrid(panel, limits, egoCenterPosition);
 
   ctx.fillStyle = "#111827";
   ctx.font = "18px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
@@ -816,25 +981,26 @@ function drawRoadSegment(segment, x, y, w, h, title, elapsed) {
   drawTrafficSignalRoad(panel, limits, segment, currentTime, roadY, roadH);
   drawRoadKinematicsChart(panel, segment, currentTime);
   drawSignalPhaseBar(panel, currentTime);
+  drawIntersectionOverview(panel, segment, egoFrontPosition, currentTime);
 
-  const egoPosition = interpolateAt(segment.time, segment.position, currentTime);
   const trafficVehicles = [];
   for (const vehicle of segment.traffic) {
-    const position = interpolateAt(vehicle.time, vehicle.position, currentTime);
-    if (finite(position) && position >= limits[0] && position <= limits[1]) {
+    const frontPosition = interpolateAtIfPresent(vehicle.time, vehicle.position, currentTime);
+    const vehicleLength = vehicle.length || 5.0;
+    if (vehicleOverlapsLimits(frontPosition, vehicleLength, limits)) {
       trafficVehicles.push({
         id: vehicle.id,
-        position,
-        length: vehicle.length || 5.0,
+        frontPosition,
+        length: vehicleLength,
       });
     }
   }
   for (const vehicle of trafficVehicles) {
-    drawVehicleRoad(panel, limits, vehicle.position, roadY, "#9ca3af", "", false, vehicle.length);
+    drawVehicleRoad(panel, limits, vehicle.frontPosition, roadY, "#9ca3af", "", false, vehicle.length);
   }
-  drawVehicleRoad(panel, limits, egoPosition, roadY, "#2563eb", "ego", true, segment.vehicleLength || 5.0);
+  drawVehicleRoad(panel, limits, egoFrontPosition, roadY, "#2563eb", "ego", true, egoLength);
 
-  const egoX = finite(egoPosition) ? mapRoadX(panel, limits, egoPosition) : null;
+  const egoX = finite(egoCenterPosition) ? mapRoadX(panel, limits, egoCenterPosition) : null;
   if (egoX !== null) {
     ctx.strokeStyle = "rgba(37, 99, 235, 0.22)";
     ctx.lineWidth = 1;
@@ -906,10 +1072,50 @@ h1 {
   color: #374151;
   font-size: 14px;
 }
+.metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 0 0 12px;
+}
+.metric-group {
+  background: white;
+  border: 1px solid #d1d5db;
+  padding: 8px 10px 10px;
+}
+.metric-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #374151;
+  margin-bottom: 6px;
+}
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+.metric-card {
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  padding: 5px 6px;
+  min-height: 38px;
+}
+.metric-card span {
+  display: block;
+  color: #6b7280;
+  font-size: 10px;
+  line-height: 1.2;
+}
+.metric-card strong {
+  display: block;
+  color: #111827;
+  font-size: 13px;
+  margin-top: 3px;
+}
 .plot {
   display: block;
   width: 100%;
-  max-height: calc(100vh - 210px);
+  max-height: calc(100vh - 310px);
   object-fit: contain;
   background: white;
   border: 1px solid #d1d5db;
@@ -917,8 +1123,8 @@ h1 {
 .plot-canvas {
   display: block;
   width: 100%;
-  height: calc(100vh - 210px);
-  min-height: 620px;
+  height: calc(100vh - 310px);
+  min-height: 540px;
   background: white;
   border: 1px solid #d1d5db;
 }

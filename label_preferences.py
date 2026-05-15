@@ -7,7 +7,9 @@ import random
 from sumo_rlhf.preference_data import PreferenceLabel, append_preference
 from sumo_rlhf.preference_sampling import (
     format_segment_summary,
+    parse_source_pair_weights,
     sample_matched_pair,
+    sample_weighted_source_pair,
     segment_start_position,
     segment_start_time,
     segment_source,
@@ -26,10 +28,11 @@ def parse_args():
     parser.add_argument("--match-time-tol", type=float, default=20.0)
     parser.add_argument(
         "--match-mode",
-        choices=["time", "position", "both", "random"],
-        default="time",
+        choices=["episode", "scene", "time", "position", "both", "random"],
+        default="scene",
     )
     parser.add_argument("--allow-same-source", action="store_true")
+    parser.add_argument("--source-pair-weights", default=None)
     parser.add_argument("--no-plots", action="store_true")
     return parser.parse_args()
 
@@ -43,15 +46,25 @@ def main():
     buffer = TrajectoryBuffer.load_jsonl(args.segments)
     if len(buffer.segments) < 2:
         raise RuntimeError("Need at least two trajectory segments to label preferences.")
+    source_pair_weights = parse_source_pair_weights(args.source_pair_weights)
 
     for pair_idx in range(args.pairs):
-        left, right, matched = sample_matched_pair(
-            buffer.segments,
-            position_tol=args.match_position_tol,
-            time_tol=args.match_time_tol,
-            match_mode=args.match_mode,
-            prefer_different_source=not args.allow_same_source,
-        )
+        if source_pair_weights:
+            left, right, matched = sample_weighted_source_pair(
+                buffer.segments,
+                source_pair_weights,
+                position_tol=args.match_position_tol,
+                time_tol=args.match_time_tol,
+                match_mode=args.match_mode,
+            )
+        else:
+            left, right, matched = sample_matched_pair(
+                buffer.segments,
+                position_tol=args.match_position_tol,
+                time_tol=args.match_time_tol,
+                match_mode=args.match_mode,
+                prefer_different_source=not args.allow_same_source,
+            )
         print("")
         print(format_summary("LEFT ", left))
         print(format_summary("RIGHT", right))

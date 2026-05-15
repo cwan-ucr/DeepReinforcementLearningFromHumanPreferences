@@ -58,7 +58,30 @@ class TrajectoryBuffer:
         stride: Optional[int] = None,
         segment_prefix: Optional[str] = None,
         traffic_trajectories: Optional[TrafficTrajectories] = None,
+        whole_episode: bool = False,
     ):
+        if whole_episode:
+            if not episode_steps:
+                return
+            base_id = f"ep{episode_id:05d}_full"
+            segment_id = f"{segment_prefix}_{base_id}" if segment_prefix else base_id
+            start_time = float(episode_steps[0].info.get("simulation_time", 0.0))
+            end_time = float(episode_steps[-1].info.get("simulation_time", start_time))
+            segment_traffic = (
+                slice_traffic_trajectories(traffic_trajectories, start_time, end_time)
+                if traffic_trajectories
+                else {}
+            )
+            self.segments.append(
+                TrajectorySegment(
+                    segment_id,
+                    episode_id,
+                    episode_steps,
+                    traffic_trajectories=segment_traffic,
+                )
+            )
+            return
+
         if stride is None:
             stride = segment_length
         for start in range(0, max(len(episode_steps) - segment_length + 1, 0), stride):

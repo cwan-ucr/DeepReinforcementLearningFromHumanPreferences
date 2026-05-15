@@ -21,6 +21,7 @@ def parse_args():
             "label",
             "reward",
             "policy",
+            "pretrain",
             "round2",
             "iterate",
             "all-before-label",
@@ -31,9 +32,30 @@ def parse_args():
     parser.add_argument("--rounds", type=int, default=2)
     parser.add_argument("--episodes", type=int, default=20)
     parser.add_argument("--policy-episodes", type=int, default=100)
+    parser.add_argument(
+        "--policy-rollouts-per-episode",
+        type=int,
+        default=2,
+        help=(
+            "Number of stochastic RL-policy rollouts to collect for each scenario "
+            "episode during policy stages."
+        ),
+    )
     parser.add_argument("--pairs", type=int, default=50)
+    parser.add_argument("--pretrain-pairs", type=int, default=300)
     parser.add_argument("--step-length", type=float, default=0.5)
     parser.add_argument("--segment-length", type=int, default=20)
+    parser.add_argument(
+        "--whole-episode-segments",
+        action="store_true",
+        help="Use each full episode as one preference segment instead of fixed-length slices.",
+    )
+    parser.add_argument(
+        "--animation-window-seconds",
+        type=float,
+        default=10.0,
+        help="Preference animation window. Use <=0 for full trajectory.",
+    )
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--rl-seed", type=int, default=100)
     parser.add_argument("--policy-seed", type=int, default=200)
@@ -48,17 +70,49 @@ def parse_args():
     parser.add_argument("--random-segments", default="runs/sumo_segments.jsonl")
     parser.add_argument("--preference-pool", default="runs/preference_pool.jsonl")
     parser.add_argument("--preferences", default="runs/preferences_round1.jsonl")
+    parser.add_argument("--pretrain-preferences", default="runs/pretrain_preferences.jsonl")
     parser.add_argument("--reward-model", default="runs/reward_model.pt")
+    parser.add_argument("--pretrain-reward-model", default="runs/reward_model_pretrain.pt")
     parser.add_argument("--policy-segments", default="runs/rlhf_policy_segments.jsonl")
+    parser.add_argument("--policy-checkpoint", default="runs/ppo_policy.pt")
     parser.add_argument("--round2-pool", default="runs/preference_pool_round2.jsonl")
     parser.add_argument("--plot-dir", default="runs/preference_web_plots")
-    parser.add_argument("--match-mode", choices=["time", "position", "both", "random"], default="time")
+    parser.add_argument("--match-mode", choices=["episode", "scene", "time", "position", "both", "random"], default="scene")
+    parser.add_argument(
+        "--human-source-pair-weights",
+        default=(
+            "rl-policy:rl-policy:0.65,"
+            "rl-policy:glosa:0.12,"
+            "rl-policy:sumo-default:0.10,"
+            "rl-policy:rl-random:0.08,"
+            "glosa:sumo-default:0.03,"
+            "sumo-default:rl-random:0.02"
+        ),
+        help="Weighted source-pair schedule used by human labeling after pretraining.",
+    )
+    parser.add_argument("--ensemble-size", type=int, default=5)
+    parser.add_argument("--reward-dropout", type=float, default=0.1)
+    parser.add_argument("--reward-weight-decay", type=float, default=1e-4)
+    parser.add_argument("--ppo-learning-rate", type=float, default=3e-4)
+    parser.add_argument("--ppo-gamma", type=float, default=0.99)
+    parser.add_argument("--ppo-gae-lambda", type=float, default=0.95)
+    parser.add_argument("--ppo-clip-ratio", type=float, default=0.2)
+    parser.add_argument("--ppo-update-epochs", type=int, default=4)
+    parser.add_argument("--ppo-batch-size", type=int, default=64)
+    parser.add_argument("--ppo-entropy-coef", type=float, default=0.01)
+    parser.add_argument("--ppo-value-coef", type=float, default=0.5)
     parser.add_argument("--skip-existing", action="store_true")
     return parser.parse_args()
 
 
 def exists(path: str) -> bool:
     return Path(path).exists()
+
+
+def episode_aligned_seed(args, source_seed: int) -> int:
+    if args.match_mode == "episode":
+        return args.seed
+    return source_seed
 
 
 def maybe_run(command: list[str], outputs: list[str], skip_existing: bool):
@@ -76,8 +130,7 @@ def collect(args):
     if args.skip_existing and exists(args.expert_segments):
         print(f"skip existing: {args.expert_segments}")
     else:
-        run(
-            [
+        command = [
                 sys.executable,
                 "collect_expert_trajectories.py",
                 "--sumo-cfg",
@@ -103,10 +156,11 @@ def collect(args):
                 args.expert_segments,
                 "--fcd-output-dir",
                 "runs/fcd_expert_default",
-            ]
-        )
-        run(
-            [
+        ]
+        if args.whole_episode_segments:
+            command.append("--whole-episode-segments")
+        run(command)
+        command = [
                 sys.executable,
                 "collect_expert_trajectories.py",
                 "--sumo-cfg",
@@ -131,10 +185,11 @@ def collect(args):
                 args.expert_segments,
                 "--fcd-output-dir",
                 "runs/fcd_expert_glosa",
-            ]
-        )
-    maybe_run(
-        [
+        ]
+        if args.whole_episode_segments:
+            command.append("--whole-episode-segments")
+        run(command)
+    command = [
             sys.executable,
             "train_sumo_rlhf.py",
             "--sumo-cfg",
@@ -147,8 +202,8 @@ def collect(args):
             str(args.step_length),
             "--segment-length",
             str(args.segment_length),
-            "--seed",
-            str(args.rl_seed),
+                "--seed",
+                str(episode_aligned_seed(args, args.rl_seed)),
             "--ego-depart-min",
             str(args.ego_depart_min),
             "--ego-depart-max",
@@ -157,7 +212,11 @@ def collect(args):
             args.random_segments,
             "--fcd-output-dir",
             "runs/fcd_random",
-        ],
+    ]
+    if args.whole_episode_segments:
+        command.append("--whole-episode-segments")
+    maybe_run(
+        command,
         [args.random_segments],
         args.skip_existing,
     )
@@ -175,8 +234,7 @@ def collect(args):
 
 
 def label(args, preference_pool: str | None = None, preferences: str | None = None, plot_dir: str | None = None):
-    run(
-        [
+    command = [
             sys.executable,
             "preference_web.py",
             "--segments",
@@ -189,29 +247,82 @@ def label(args, preference_pool: str | None = None, preferences: str | None = No
             str(args.pairs),
             "--match-mode",
             args.match_mode,
+            "--animation-window-seconds",
+            str(0.0 if args.whole_episode_segments else args.animation_window_seconds),
             "--exit-when-done",
-        ]
-    )
+    ]
+    if args.human_source_pair_weights:
+        command.extend(["--source-pair-weights", args.human_source_pair_weights])
+    run(command)
 
 
-def reward(args, preference_pool: str | None = None, preferences: str | None = None, reward_model: str | None = None):
-    run(
-        [
+def reward(
+    args,
+    preference_pool: str | None = None,
+    preferences: str | list[str] | None = None,
+    reward_model: str | None = None,
+):
+    preference_files = preferences or args.preferences
+    if isinstance(preference_files, str):
+        preference_files = [preference_files]
+    command = [
             sys.executable,
             "train_reward_model.py",
             "--segments",
             preference_pool or args.preference_pool,
             "--preferences",
-            preferences or args.preferences,
+            *preference_files,
             "--output",
             reward_model or args.reward_model,
+            "--ensemble-size",
+            str(args.ensemble_size),
+            "--dropout",
+            str(args.reward_dropout),
+            "--weight-decay",
+            str(args.reward_weight_decay),
+            "--skip-missing-preferences",
+    ]
+    run(command)
+
+
+def pretrain(args):
+    run(
+        [
+            sys.executable,
+            "generate_preference_labels.py",
+            "--segments",
+            args.preference_pool,
+            "--output",
+            args.pretrain_preferences,
+            "--pairs",
+            str(args.pretrain_pairs),
+            "--ranking",
+            "glosa",
+            "sumo-default",
+            "rl-random",
+            "--match-mode",
+            args.match_mode,
+            "--seed",
+            str(args.seed),
+            "--overwrite",
         ]
+    )
+    reward(
+        args,
+        preference_pool=args.preference_pool,
+        preferences=args.pretrain_preferences,
+        reward_model=args.pretrain_reward_model,
     )
 
 
-def policy(args, reward_model: str | None = None, policy_segments: str | None = None):
-    run(
-        [
+def policy(
+    args,
+    reward_model: str | None = None,
+    policy_segments: str | None = None,
+    policy_checkpoint_in: str | None = None,
+    policy_checkpoint_out: str | None = None,
+):
+    command = [
             sys.executable,
             "train_sumo_rlhf.py",
             "--sumo-cfg",
@@ -225,19 +336,42 @@ def policy(args, reward_model: str | None = None, policy_segments: str | None = 
             "--segment-length",
             str(args.segment_length),
             "--seed",
-            str(args.policy_seed),
+            str(episode_aligned_seed(args, args.policy_seed)),
+            "--rollouts-per-episode",
+            str(args.policy_rollouts_per_episode),
             "--ego-depart-min",
             str(args.ego_depart_min),
             "--ego-depart-max",
             str(args.ego_depart_max),
             "--reward-checkpoint",
             reward_model or args.reward_model,
+            "--ppo-learning-rate",
+            str(args.ppo_learning_rate),
+            "--ppo-gamma",
+            str(args.ppo_gamma),
+            "--ppo-gae-lambda",
+            str(args.ppo_gae_lambda),
+            "--ppo-clip-ratio",
+            str(args.ppo_clip_ratio),
+            "--ppo-update-epochs",
+            str(args.ppo_update_epochs),
+            "--ppo-batch-size",
+            str(args.ppo_batch_size),
+            "--ppo-entropy-coef",
+            str(args.ppo_entropy_coef),
+            "--ppo-value-coef",
+            str(args.ppo_value_coef),
             "--output",
             policy_segments or args.policy_segments,
             "--fcd-output-dir",
             "runs/fcd_rlhf",
-        ]
-    )
+    ]
+    if args.whole_episode_segments:
+        command.append("--whole-episode-segments")
+    if policy_checkpoint_in:
+        command.extend(["--policy-checkpoint-in", policy_checkpoint_in])
+    command.extend(["--policy-checkpoint-out", policy_checkpoint_out or args.policy_checkpoint])
+    run(command)
 
 
 def round2(args, preference_pool: str | None = None, policy_segments: str | None = None, output_pool: str | None = None):
@@ -257,12 +391,31 @@ def round2(args, preference_pool: str | None = None, policy_segments: str | None
 def iterate(args):
     setup(args)
     collect(args)
+    pretrain(args)
 
-    current_pool = args.preference_pool
+    bootstrap_policy_segments = "runs/rlhf_policy_segments_round0.jsonl"
+    bootstrap_policy_checkpoint = "runs/ppo_policy_round0.pt"
+    bootstrap_pool = "runs/preference_pool_round1.jsonl"
+    policy(
+        args,
+        reward_model=args.pretrain_reward_model,
+        policy_segments=bootstrap_policy_segments,
+        policy_checkpoint_out=bootstrap_policy_checkpoint,
+    )
+    round2(
+        args,
+        preference_pool=args.preference_pool,
+        policy_segments=bootstrap_policy_segments,
+        output_pool=bootstrap_pool,
+    )
+
+    current_pool = bootstrap_pool
+    current_policy_checkpoint = bootstrap_policy_checkpoint
     for round_idx in range(1, args.rounds + 1):
         preferences = f"runs/preferences_round{round_idx}.jsonl"
         reward_model = f"runs/reward_model_round{round_idx}.pt"
         policy_segments = f"runs/rlhf_policy_segments_round{round_idx}.jsonl"
+        policy_checkpoint = f"runs/ppo_policy_round{round_idx}.pt"
         plot_dir = f"runs/preference_web_plots_round{round_idx}"
         next_pool = f"runs/preference_pool_round{round_idx + 1}.jsonl"
 
@@ -271,10 +424,17 @@ def iterate(args):
         reward(
             args,
             preference_pool=current_pool,
-            preferences=preferences,
+            preferences=[args.pretrain_preferences, preferences],
             reward_model=reward_model,
         )
-        policy(args, reward_model=reward_model, policy_segments=policy_segments)
+        policy(
+            args,
+            reward_model=reward_model,
+            policy_segments=policy_segments,
+            policy_checkpoint_in=current_policy_checkpoint,
+            policy_checkpoint_out=policy_checkpoint,
+        )
+        current_policy_checkpoint = policy_checkpoint
 
         if round_idx < args.rounds:
             round2(
@@ -298,6 +458,8 @@ def main():
         reward(args)
     elif args.stage == "policy":
         policy(args)
+    elif args.stage == "pretrain":
+        pretrain(args)
     elif args.stage == "round2":
         round2(args)
     elif args.stage == "iterate":

@@ -24,6 +24,11 @@ def parse_args():
     parser.add_argument("--max-steps", type=int, default=300)
     parser.add_argument("--step-length", type=float, default=0.5)
     parser.add_argument("--segment-length", type=int, default=10)
+    parser.add_argument(
+        "--whole-episode-segments",
+        action="store_true",
+        help="Store each episode as one full-trajectory segment instead of fixed-length slices.",
+    )
     parser.add_argument("--output", default="runs/expert_segments.jsonl")
     parser.add_argument("--fcd-output-dir", default="runs/fcd")
     parser.add_argument("--ego-depart-min", type=float, default=0.0)
@@ -95,6 +100,7 @@ def main():
                 segment_length=args.segment_length,
                 segment_prefix=args.expert_type,
                 traffic_trajectories=traffic_trajectories,
+                whole_episode=args.whole_episode_segments,
             )
             depart_time = (
                 float(episode_steps[0].info.get("ego_depart_time"))

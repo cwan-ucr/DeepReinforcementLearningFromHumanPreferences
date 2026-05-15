@@ -7,6 +7,8 @@ from typing import Dict, Optional, Sequence, Tuple
 import numpy as np
 import os
 
+FUEL_LOWER_HEATING_VALUE_KJ_PER_KG = 44000.0
+
 try:
     import gymnasium as gym
     from gymnasium import spaces
@@ -30,7 +32,19 @@ class SumoEgoConfig:
     step_length: float = 1.0
     max_episode_steps: int = 300
     max_depart_delay_steps: int = 1000
-    action_accels: Tuple[float, ...] = (-3.0, -1.5, 0.0, 1.0, 2.0)
+    action_accels: Tuple[float, ...] = (
+        -3.0,
+        -2.5,
+        -2.0,
+        -1.5,
+        -1.0,
+        -0.5,
+        0.0,
+        0.5,
+        1.0,
+        1.5,
+        2.0,
+    )
     max_position: float = 3000.0
     max_speed: float = 25.0
     max_front_dist: float = 120.0
@@ -69,6 +83,7 @@ class SumoEgoEnv(gym.Env):
         self._steps = 0
         self._reset_count = 0
         self._active_seed = config.seed
+        self._fcd_episode_index = 0
         self._current_fcd_path: Optional[Path] = None
         self._ego_depart_time = 0.0
         self._prev_action = 0.0
@@ -82,9 +97,22 @@ class SumoEgoEnv(gym.Env):
             dtype=np.float32,
         )
 
-    def reset(self):
+    def reset(
+        self,
+        scenario_seed: Optional[int] = None,
+        fcd_episode_index: Optional[int] = None,
+    ):
         self.close()
-        self._active_seed = self._next_seed()
+        if scenario_seed is None:
+            self._active_seed = self._next_seed()
+        else:
+            self._active_seed = int(scenario_seed)
+            self._reset_count += 1
+        self._fcd_episode_index = (
+            max(self._reset_count - 1, 0)
+            if fcd_episode_index is None
+            else int(fcd_episode_index)
+        )
         self._start_sumo()
         self._steps = 0
         self._prev_action = 0.0
@@ -209,13 +237,13 @@ class SumoEgoEnv(gym.Env):
         return 20000 + (os.getpid() % 20000)
 
     def _next_seed(self) -> Optional[int]:
+        reset_index = self._reset_count
+        self._reset_count += 1
         if self.config.seed is None:
             return None
         if not self.config.randomize_seed_on_reset:
             return int(self.config.seed)
-        seed = int(self.config.seed) + self._reset_count
-        self._reset_count += 1
-        return seed
+        return int(self.config.seed) + reset_index
 
     def _depart_ego(self):
         rng = np.random.default_rng(self._active_seed)
@@ -267,11 +295,10 @@ class SumoEgoEnv(gym.Env):
     def _make_fcd_output_path(self) -> Optional[Path]:
         if not self.config.fcd_output_dir:
             return None
-        episode_index = max(self._reset_count - 1, 0)
         seed_part = "none" if self._active_seed is None else str(int(self._active_seed))
         return (
             Path(self.config.fcd_output_dir)
-            / f"episode_{episode_index:05d}_seed_{seed_part}.fcd.xml"
+            / f"episode_{self._fcd_episode_index:05d}_seed_{seed_part}.fcd.xml"
         )
 
     def _wait_for_ego(self):
@@ -443,8 +470,46 @@ class SumoEgoEnv(gym.Env):
             "sumo_seed": self._active_seed,
             "ego_depart_time": self._ego_depart_time,
             "action_accel": float(action_accel),
+            **self._energy_info(arrived),
             "raw_observation": self._get_raw_observation_dict() if not arrived else {},
         }
+
+    def _energy_info(self, arrived: bool) -> Dict[str, float]:
+        if arrived or self.config.ego_id not in self._traci.vehicle.getIDList():
+            return {
+                "fuel_consumption_mg_s": 0.0,
+                "electricity_consumption_wh_s": 0.0,
+                "energy_consumption_kj_s": 0.0,
+            }
+
+        fuel_mg_s = self._safe_vehicle_value("getFuelConsumption")
+        electricity_wh_s = self._safe_vehicle_value("getElectricityConsumption")
+        energy_kj_s = 0.0
+        has_energy = False
+        if np.isfinite(fuel_mg_s):
+            energy_kj_s += (
+                fuel_mg_s
+                / 1_000_000.0
+                * FUEL_LOWER_HEATING_VALUE_KJ_PER_KG
+            )
+            has_energy = True
+        if np.isfinite(electricity_wh_s):
+            energy_kj_s += electricity_wh_s * 3.6
+            has_energy = True
+        return {
+            "fuel_consumption_mg_s": float(fuel_mg_s),
+            "electricity_consumption_wh_s": float(electricity_wh_s),
+            "energy_consumption_kj_s": float(energy_kj_s if has_energy else np.nan),
+        }
+
+    def _safe_vehicle_value(self, method_name: str) -> float:
+        method = getattr(self._traci.vehicle, method_name, None)
+        if method is None:
+            return float("nan")
+        try:
+            return float(method(self.config.ego_id))
+        except Exception:
+            return float("nan")
 
     def _next_tls_features(self) -> Tuple[float, float, float, float, float]:
         next_tls: Sequence[Tuple[str, int, float, str]] = self._traci.vehicle.getNextTLS(
