@@ -28,19 +28,26 @@ class PPOConfig:
 class ActorCritic(nn.Module):
     def __init__(self, obs_dim: int, action_count: int, hidden_dim: int = 128):
         super().__init__()
-        self.shared = nn.Sequential(
+        self.actor_body = nn.Sequential(
             nn.Linear(obs_dim, hidden_dim),
             nn.Tanh(),
             nn.Linear(hidden_dim, hidden_dim),
             nn.Tanh(),
         )
-        self.policy_head = nn.Linear(hidden_dim, action_count)
-        self.value_head = nn.Linear(hidden_dim, 1)
+        self.critic_body = nn.Sequential(
+            nn.Linear(obs_dim, hidden_dim),
+            nn.Tanh(),
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.Tanh(),
+        )
+        self.actor_head = nn.Linear(hidden_dim, action_count)
+        self.critic_head = nn.Linear(hidden_dim, 1)
 
     def forward(self, obs: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
-        features = self.shared(obs)
-        logits = self.policy_head(features)
-        values = self.value_head(features).squeeze(-1)
+        actor_features = self.actor_body(obs)
+        critic_features = self.critic_body(obs)
+        logits = self.actor_head(actor_features)
+        values = self.critic_head(critic_features).squeeze(-1)
         return logits, values
 
 
@@ -141,7 +148,7 @@ class PPOAgent:
         path.parent.mkdir(parents=True, exist_ok=True)
         torch.save(
             {
-                "format": "sumo_rlhf_ppo_policy_v1",
+                "format": "sumo_rlhf_ppo_policy_v2",
                 "config": {
                     "gamma": float(self.config.gamma),
                     "gae_lambda": float(self.config.gae_lambda),
@@ -162,9 +169,11 @@ class PPOAgent:
     def load(self, path: str | Path):
         checkpoint = load_torch_checkpoint(path)
         if isinstance(checkpoint, dict) and "state_dict" in checkpoint:
-            self.model.load_state_dict(checkpoint["state_dict"])
+            state_dict = checkpoint["state_dict"]
         else:
-            self.model.load_state_dict(checkpoint)
+            state_dict = checkpoint
+        state_dict = upgrade_legacy_shared_backbone_state_dict(state_dict)
+        self.model.load_state_dict(state_dict, strict=False)
         self.model.eval()
 
     def update(self, next_value: float = 0.0) -> dict[str, float] | None:
@@ -273,3 +282,29 @@ def load_torch_checkpoint(path: str | Path):
         return torch.load(path, map_location="cpu")
     except pickle.UnpicklingError:
         return torch.load(path, map_location="cpu", weights_only=False)
+
+
+def upgrade_legacy_shared_backbone_state_dict(state_dict: dict) -> dict:
+    """Map legacy shared-backbone PPO checkpoints to split actor/critic backbones."""
+    keys = set(state_dict.keys())
+    if "actor_body.0.weight" in keys or "critic_body.0.weight" in keys:
+        return state_dict
+    if "shared.0.weight" not in keys:
+        return state_dict
+
+    migrated = dict(state_dict)
+    legacy_to_new = {
+        "shared.0.weight": ("actor_body.0.weight", "critic_body.0.weight"),
+        "shared.0.bias": ("actor_body.0.bias", "critic_body.0.bias"),
+        "shared.2.weight": ("actor_body.2.weight", "critic_body.2.weight"),
+        "shared.2.bias": ("actor_body.2.bias", "critic_body.2.bias"),
+        "policy_head.weight": ("actor_head.weight",),
+        "policy_head.bias": ("actor_head.bias",),
+        "value_head.weight": ("critic_head.weight",),
+        "value_head.bias": ("critic_head.bias",),
+    }
+    for old_key, new_keys in legacy_to_new.items():
+        if old_key in state_dict:
+            for new_key in new_keys:
+                migrated[new_key] = state_dict[old_key]
+    return migrated

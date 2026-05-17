@@ -31,18 +31,16 @@ class StepRewardModel(nn.Module):
         self.dropout = float(dropout)
         layers: list[nn.Module] = [
             nn.Linear(obs_dim + 1, hidden_dim),
-            nn.ReLU(),
+            nn.LeakyReLU(),
         ]
         if dropout > 0:
             layers.append(nn.Dropout(dropout))
         layers.extend(
             [
                 nn.Linear(hidden_dim, hidden_dim),
-                nn.ReLU(),
+                nn.LeakyReLU(),
             ]
         )
-        if dropout > 0:
-            layers.append(nn.Dropout(dropout))
         layers.append(nn.Linear(hidden_dim, 1))
         self.net = nn.Sequential(*layers)
 

@@ -1,8 +1,12 @@
 from __future__ import annotations
 
+import json
 import random
 import re
+from pathlib import Path
 from typing import Sequence
+
+import numpy as np
 
 
 SCENE_POSITION_MIN = 0.0
@@ -11,6 +15,12 @@ SCENE_POSITION_BIN_SIZE = 50.0
 SCENE_POSITION_BIN_COUNT = int((SCENE_POSITION_MAX - SCENE_POSITION_MIN) / SCENE_POSITION_BIN_SIZE)
 SCENE_PHASE_BIN_COUNT = 4
 SIGNAL_CYCLE_SECONDS = 90.0
+CONTROL_SCENES = (
+    "front0_pass1",
+    "front0_pass0",
+    "front1_pass1",
+    "front1_pass0",
+)
 
 
 def segment_start_position(segment) -> float:
@@ -40,6 +50,149 @@ def segment_source(segment) -> str:
     if not segment.steps:
         return "unknown"
     return str(segment.steps[0].info.get("source", segment.segment_id.split("_", 1)[0]))
+
+
+def _segment_decision_raw_observation(segment) -> dict:
+    if not segment.steps:
+        return {}
+    candidate = None
+    for step in segment.steps:
+        raw = step.info.get("raw_observation", {})
+        tls_distance = raw.get("tls_distance")
+        if tls_distance is None:
+            continue
+        try:
+            dist = float(tls_distance)
+        except (TypeError, ValueError):
+            continue
+        if 20.0 <= dist <= 120.0:
+            candidate = raw
+            break
+    if candidate is not None:
+        return candidate
+    return segment.steps[0].info.get("raw_observation", {})
+
+
+def _infer_segment_control_scene(segment) -> str:
+    raw = _segment_decision_raw_observation(segment)
+    front_id = raw.get("front_vehicle_id")
+    front_distance = raw.get("front_distance")
+    has_front = False
+    if front_id not in (None, "", "None"):
+        has_front = True
+    if front_distance is not None:
+        try:
+            if float(front_distance) < 80.0:
+                has_front = True
+        except (TypeError, ValueError):
+            pass
+
+    tls_green = float(raw.get("tls_green", 0.0) or 0.0) > 0.5
+    speed = float(raw.get("speed", 0.0) or 0.0)
+    tls_distance = float(raw.get("tls_distance", np.inf) or np.inf)
+    tls_remaining = float(raw.get("tls_time_remaining", 0.0) or 0.0)
+    eta_to_stopline = tls_distance / max(speed, 0.5)
+    pass_now = bool(tls_green and eta_to_stopline <= max(tls_remaining - 1.0, 0.0))
+
+    return f"front{1 if has_front else 0}_pass{1 if pass_now else 0}"
+
+
+def load_manual_scene_labels(path: str | Path | None) -> dict[int, str]:
+    """Load manual scene labels keyed by episode id.
+
+    Supports:
+    - JSON object: {"12": "front1_pass0", "13": "front0_pass1"}
+    - JSONL rows: {"episode_id": 12, "scene": "front1_pass0"}
+    """
+
+    if not path:
+        return {}
+    file_path = Path(path)
+    if not file_path.exists():
+        raise FileNotFoundError(f"scene labels file not found: {file_path}")
+
+    labels: dict[int, str] = {}
+    if file_path.suffix.lower() == ".jsonl":
+        for line in file_path.read_text(encoding="utf-8").splitlines():
+            row_text = line.strip()
+            if not row_text:
+                continue
+            row = json.loads(row_text)
+            episode_id = int(row["episode_id"])
+            scene = str(row["scene"])
+            if scene in CONTROL_SCENES:
+                labels[episode_id] = scene
+        return labels
+
+    payload = json.loads(file_path.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        raise ValueError("scene labels JSON must be an object keyed by episode_id.")
+    for key, value in payload.items():
+        scene = str(value)
+        if scene not in CONTROL_SCENES:
+            continue
+        labels[int(key)] = scene
+    return labels
+
+
+def segment_control_scene(
+    segment,
+    manual_scene_labels: dict[int, str] | None = None,
+    manual_scene_only: bool = False,
+) -> str:
+    if manual_scene_labels:
+        scene = manual_scene_labels.get(segment_episode_id(segment))
+        if scene in CONTROL_SCENES:
+            return scene
+        if manual_scene_only:
+            return "unlabeled"
+    return _infer_segment_control_scene(segment)
+
+
+def parse_scenario_weights(spec: str | None) -> list[tuple[str, float]]:
+    """Parse entries like 'front0_pass1:0.1,front0_pass0:0.4'."""
+
+    if not spec:
+        return []
+    entries = []
+    for item in spec.split(","):
+        item = item.strip()
+        if not item:
+            continue
+        parts = item.split(":")
+        if len(parts) != 2:
+            raise ValueError(
+                "scenario weights must use 'scene_key:weight' entries."
+            )
+        scene_key, weight_text = parts
+        if scene_key not in CONTROL_SCENES:
+            raise ValueError(
+                f"unknown scene key '{scene_key}'. Valid keys: {', '.join(CONTROL_SCENES)}"
+            )
+        weight = float(weight_text)
+        if weight <= 0:
+            continue
+        entries.append((scene_key, weight))
+    return entries
+
+
+def load_scenario_weights(path: str | Path | None) -> list[tuple[str, float]]:
+    if not path:
+        return []
+    payload = json.loads(Path(path).read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        raise ValueError("scenario weights file must contain a JSON object.")
+    entries = []
+    for scene_key, weight in payload.items():
+        if scene_key not in CONTROL_SCENES:
+            continue
+        try:
+            numeric_weight = float(weight)
+        except (TypeError, ValueError):
+            continue
+        if numeric_weight > 0:
+            entries.append((scene_key, numeric_weight))
+    return entries
 
 
 def _bin_index(value: float, low: float, high: float, bins: int) -> int:
@@ -347,7 +500,43 @@ def sample_weighted_source_pair(
     position_tol: float,
     time_tol: float,
     match_mode: str = "scene",
+    scenario_weights: Sequence[tuple[str, float]] | None = None,
+    manual_scene_labels: dict[int, str] | None = None,
+    manual_scene_only: bool = False,
 ):
+    if scenario_weights:
+        segments_by_scene = {}
+        for segment in segments:
+            scene_key = segment_control_scene(
+                segment,
+                manual_scene_labels=manual_scene_labels,
+                manual_scene_only=manual_scene_only,
+            )
+            if scene_key not in CONTROL_SCENES:
+                continue
+            segments_by_scene.setdefault(scene_key, []).append(segment)
+        eligible_scenes = [
+            (scene_key, weight)
+            for scene_key, weight in scenario_weights
+            if len(segments_by_scene.get(scene_key, [])) >= 2
+        ]
+        if eligible_scenes:
+            scene_keys = [entry[0] for entry in eligible_scenes]
+            scene_probs = [entry[1] for entry in eligible_scenes]
+            chosen_scene = random.choices(scene_keys, weights=scene_probs, k=1)[0]
+            scene_segments = segments_by_scene.get(chosen_scene, [])
+            if len(scene_segments) >= 2:
+                return sample_weighted_source_pair(
+                    scene_segments,
+                    source_pair_weights,
+                    position_tol=position_tol,
+                    time_tol=time_tol,
+                    match_mode=match_mode,
+                    scenario_weights=None,
+                    manual_scene_labels=None,
+                    manual_scene_only=False,
+                )
+
     entries = []
     for entry in source_pair_weights:
         left_segments, right_segments = _segments_for_pair(segments, entry[0], entry[1])

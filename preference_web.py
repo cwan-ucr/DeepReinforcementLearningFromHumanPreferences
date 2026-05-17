@@ -12,7 +12,11 @@ from sumo_rlhf.preference_data import PreferenceLabel, append_preference
 from sumo_rlhf.metrics import compact_metric_cards
 from sumo_rlhf.preference_sampling import (
     format_segment_summary,
+    load_manual_scene_labels,
+    load_scenario_weights,
+    parse_scenario_weights,
     parse_source_pair_weights,
+    segment_control_scene,
     sample_matched_pair,
     sample_weighted_source_pair,
     segment_start_position,
@@ -73,6 +77,32 @@ def parse_args():
             "'rl-policy:rl-policy:0.65,rl-policy:glosa:0.12,glosa:sumo-default:0.03'."
         ),
     )
+    parser.add_argument(
+        "--scenario-weights",
+        default=None,
+        help=(
+            "Optional scene weights such as "
+            "'front0_pass1:0.1,front0_pass0:0.4,front1_pass1:0.1,front1_pass0:0.4'."
+        ),
+    )
+    parser.add_argument(
+        "--scenario-weights-file",
+        default=None,
+        help="Optional JSON file mapping scene keys to weights for this labeling round.",
+    )
+    parser.add_argument(
+        "--scene-labels-file",
+        default=None,
+        help=(
+            "Optional manual scene label file (.json/.jsonl) keyed by episode_id. "
+            "When present, manual labels are used before automatic scene inference."
+        ),
+    )
+    parser.add_argument(
+        "--scene-labels-strict",
+        action="store_true",
+        help="When set, episodes missing manual labels are treated as unlabeled for scene-based sampling.",
+    )
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8765)
     parser.add_argument(
@@ -95,6 +125,10 @@ class PreferenceWebApp:
         self.current_matched = False
         self.label_count = 0
         self.source_pair_weights = parse_source_pair_weights(args.source_pair_weights)
+        self.scenario_weights = parse_scenario_weights(args.scenario_weights)
+        self.scene_labels = load_manual_scene_labels(args.scene_labels_file)
+        if args.scenario_weights_file:
+            self.scenario_weights = load_scenario_weights(args.scenario_weights_file)
         self.next_pair()
 
     def next_pair(self):
@@ -105,6 +139,9 @@ class PreferenceWebApp:
                 position_tol=self.args.match_position_tol,
                 time_tol=self.args.match_time_tol,
                 match_mode=self.args.match_mode,
+                scenario_weights=self.scenario_weights,
+                manual_scene_labels=self.scene_labels,
+                manual_scene_only=self.args.scene_labels_strict,
             )
         else:
             left, right, matched = sample_matched_pair(
@@ -233,6 +270,10 @@ def make_handler(app: PreferenceWebApp):
             time_delta = abs(segment_start_time(left) - segment_start_time(right))
             match_status = "matched" if app.current_matched else "closest fallback"
             source_pair = f"{segment_source(left)} vs {segment_source(right)}"
+            scene_pair = (
+                f"{segment_control_scene(left, app.scene_labels, app.args.scene_labels_strict)} "
+                f"vs {segment_control_scene(right, app.scene_labels, app.args.scene_labels_strict)}"
+            )
             media_html = (
                 '<canvas id="plotCanvas" class="plot-canvas" aria-label="trajectory comparison animation"></canvas>'
                 if app.args.media in {"road", "interactive"}
@@ -260,7 +301,7 @@ def make_handler(app: PreferenceWebApp):
                 <section class="meta">
                   <div>{html.escape(format_segment_summary("LEFT", left))}</div>
                   <div>{html.escape(format_segment_summary("RIGHT", right))}</div>
-                  <div>pair match: {match_status}, mode={app.args.match_mode}, source={source_pair}, Δpos={pos_delta:.1f}m, Δtime={time_delta:.1f}s</div>
+                  <div>pair match: {match_status}, mode={app.args.match_mode}, source={source_pair}, scene={scene_pair}, Δpos={pos_delta:.1f}m, Δtime={time_delta:.1f}s</div>
                 </section>
                 <section class="metrics">
                   {self._metric_cards("LEFT", app.current_payload["leftMetrics"])}
@@ -495,11 +536,43 @@ function drawSegment(segment, x, y, w, h, title, elapsed) {
   drawTraffic(panels[0], segment, segment.yLimits[0], currentTime);
   drawSignals(panels[0], segment, segment.yLimits[0], currentTime);
   drawSeries(panels[0], segment, segment.position, segment.yLimits[0], currentTime, "#1f77b4", 3);
+  if (segment.safeSpeed) {
+    drawSeries(
+      panels[1],
+      segment,
+      segment.safeSpeed,
+      segment.yLimits[1],
+      segment.window[1],
+      "rgba(239, 68, 68, 0.35)",
+      2.0,
+      [6, 4]
+    );
+  }
   drawSeries(panels[1], segment, segment.speed, segment.yLimits[1], currentTime, "#17becf", 2.4);
+  if (segment.safeSpeed) {
+    drawSeries(panels[1], segment, segment.safeSpeed, segment.yLimits[1], currentTime, "#ef4444", 3.0, [10, 4]);
+  }
   drawSeries(panels[2], segment, segment.action, segment.yLimits[2], currentTime, "#9467bd", 2.4);
   drawSeries(panels[3], segment, segment.frontGap, segment.yLimits[3], currentTime, "#8c564b", 2.4);
   drawSeries(panels[3], segment, segment.rearGap, segment.yLimits[3], currentTime, "#bcbd22", 2.4);
   drawCurrentLine(panels, segment, currentTime);
+
+  if (segment.safeSpeed) {
+    ctx.font = "11px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
+    ctx.textAlign = "left";
+    ctx.fillStyle = "#17becf";
+    ctx.fillText("v", panels[1].x + 6, panels[1].y + 14);
+    ctx.fillStyle = "#ef4444";
+    ctx.fillText("v_safe", panels[1].x + 22, panels[1].y + 14);
+    const currentV = interpolateAt(segment.time, segment.speed, currentTime);
+    const currentSafeV = interpolateAt(segment.time, segment.safeSpeed, currentTime);
+    if (currentV !== null || currentSafeV !== null) {
+      const vText = currentV === null ? "v=--" : "v=" + currentV.toFixed(2);
+      const safeText = currentSafeV === null ? "v_safe=--" : "v_safe=" + currentSafeV.toFixed(2);
+      ctx.fillStyle = "#111827";
+      ctx.fillText(vText + "  " + safeText, panels[1].x + 86, panels[1].y + 14);
+    }
+  }
 
   ctx.fillStyle = "#4b5563";
   ctx.font = "12px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";

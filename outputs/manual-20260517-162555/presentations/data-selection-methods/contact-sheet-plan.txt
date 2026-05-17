@@ -1,0 +1,13 @@
+12-slide contact sheet plan:
+1. Cover with method map and thesis rail.
+2. Split framework: score function to action mechanism.
+3. Taxonomy matrix with method examples.
+4. Horizontal pretraining pipeline.
+5. Compact table of heuristic signals.
+6. Distribution matching diagram and formulas.
+7. Deduplication ladder.
+8. Safety and multilingual gate/risk split.
+9. Data mixing weight bars and algorithm spectrum.
+10. Instruction tuning diversity flow.
+11. Alignment selection loop.
+12. Practical decision checklist.

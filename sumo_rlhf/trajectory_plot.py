@@ -47,6 +47,14 @@ def _optional_raw_series(segment: TrajectorySegment, key: str) -> np.ndarray:
     return np.asarray(values, dtype=np.float32)
 
 
+def _optional_info_series(segment: TrajectorySegment, key: str) -> np.ndarray:
+    values = []
+    for step in segment.steps:
+        value = step.info.get(key)
+        values.append(np.nan if value is None else float(value))
+    return np.asarray(values, dtype=np.float32)
+
+
 def _time_axis(segment: TrajectorySegment) -> np.ndarray:
     times = [
         step.info.get("simulation_time")
@@ -143,6 +151,7 @@ def _segment_y_limits(
     in_window = (t >= start) & (t <= end)
     position = np.asarray(_raw_series(segment, "position"), dtype=np.float32)
     speed = np.asarray(_raw_series(segment, "speed"), dtype=np.float32)
+    safe_speed = _optional_info_series(segment, "safe_ref_speed")
     actions = np.asarray([step.action_value for step in segment.steps], dtype=np.float32)
     actual_accel = _actual_accel_series(t, speed)
     front_distance = np.asarray(
@@ -164,6 +173,7 @@ def _segment_y_limits(
         position_values.extend(vehicle_position[vehicle_mask])
 
     speed_values = list(speed[in_window])
+    speed_values.extend(safe_speed[in_window])
     gap_values = list(front_distance[in_window])
     gap_values.extend(rear_distance[in_window])
     return [
@@ -196,6 +206,7 @@ def _plot_one_segment(
 
     position = np.asarray(_raw_series(segment, "position"), dtype=np.float32)
     speed = np.asarray(_raw_series(segment, "speed"), dtype=np.float32)
+    safe_speed = _optional_info_series(segment, "safe_ref_speed")
     front_distance = np.asarray(
         _raw_series(segment, "front_distance"), dtype=np.float32
     )
@@ -278,8 +289,19 @@ def _plot_one_segment(
     axes[0].legend(loc="upper left", fontsize=8)
 
     axes[1].plot(t[time_mask], speed[time_mask], color="#17becf", linewidth=1.8)
+    if np.any(np.isfinite(safe_speed[time_mask])):
+        axes[1].plot(
+            t[time_mask],
+            safe_speed[time_mask],
+            color="#f59e0b",
+            linewidth=1.6,
+            linestyle="--",
+            label="safe speed",
+        )
     axes[1].set_ylabel("speed (m/s)")
     axes[1].grid(True, alpha=0.25)
+    if np.any(np.isfinite(safe_speed[time_mask])):
+        axes[1].legend(loc="upper left", fontsize=8)
 
     axes[2].step(t[time_mask], actions[time_mask], where="post", color="#9467bd", linewidth=1.8)
     axes[2].set_ylabel("accel cmd")
@@ -353,6 +375,7 @@ def segment_animation_payload(
     in_window = (t >= window[0]) & (t <= window[1])
     position = np.asarray(_raw_series(segment, "position"), dtype=np.float32)
     speed = np.asarray(_raw_series(segment, "speed"), dtype=np.float32)
+    safe_speed = _optional_info_series(segment, "safe_ref_speed")
     actions = np.asarray([step.action_value for step in segment.steps], dtype=np.float32)
     actual_accel = _actual_accel_series(t, speed)
     front_distance = np.asarray(
@@ -387,6 +410,7 @@ def segment_animation_payload(
         "time": t[in_window].astype(float).tolist(),
         "position": position[in_window].astype(float).tolist(),
         "speed": speed[in_window].astype(float).tolist(),
+        "safeSpeed": safe_speed[in_window].astype(float).tolist(),
         "vehicleLength": DEFAULT_VEHICLE_LENGTH,
         "action": actions[in_window].astype(float).tolist(),
         "actualAccel": actual_accel[in_window].astype(float).tolist(),

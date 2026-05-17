@@ -1,0 +1,17 @@
+{
+  "stage": "iterate",
+  "rounds": 5,
+  "episodes": 10,
+  "policy_episodes": 10,
+  "policy_rollouts_per_episode": 2,
+  "step_length": 0.5,
+  "ego_depart_speed_min": 0.0,
+  "ego_depart_speed_max": 13.0,
+  "whole_episode_segments": true,
+  "match_mode": "episode",
+  "sumo_cfg": "scenarios/simple_arterial/simple_arterial.sumocfg",
+  "glosa_cfg": "scenarios/simple_arterial/simple_arterial_glosa.sumocfg",
+  "human_source_pair_weights": "rl-policy:rl-policy:0.65,rl-policy:glosa:0.12,rl-policy:sumo-default:0.10,rl-policy:rl-random:0.03,glosa:sumo-default:0.08,sumo-default:rl-random:0.02",
+  "pairs": 50,
+  "pretrain_pairs": 100
+}

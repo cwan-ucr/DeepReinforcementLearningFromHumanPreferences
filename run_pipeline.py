@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 import argparse
+import json
 import subprocess
 import sys
 from pathlib import Path
+
+DEFAULT_PIPELINE_CONFIG = "pipeline.cfg.json"
 
 
 def run(command: list[str]):
@@ -11,8 +14,45 @@ def run(command: list[str]):
     subprocess.run(command, check=True)
 
 
-def parse_args():
+def _load_config_defaults(path: str) -> dict:
+    config_path = Path(path)
+    if not config_path.exists():
+        return {}
+    payload = json.loads(config_path.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        raise ValueError(f"Config file must contain a JSON object: {config_path}")
+    return {
+        str(key).replace("-", "_"): value
+        for key, value in payload.items()
+    }
+
+
+def parse_args(argv: list[str] | None = None):
+    bootstrap = argparse.ArgumentParser(add_help=False)
+    bootstrap.add_argument("--config", default=DEFAULT_PIPELINE_CONFIG)
+    bootstrap.add_argument(
+        "--no-config",
+        action="store_true",
+        help="Ignore config file defaults and use CLI/default argparse values only.",
+    )
+    bootstrap_args, _ = bootstrap.parse_known_args(argv)
+    config_defaults = (
+        {}
+        if bootstrap_args.no_config
+        else _load_config_defaults(bootstrap_args.config)
+    )
+
     parser = argparse.ArgumentParser(description="Run the SUMO RLHF workflow.")
+    parser.add_argument(
+        "--config",
+        default=bootstrap_args.config,
+        help=f"Path to JSON config file. Default: {DEFAULT_PIPELINE_CONFIG}",
+    )
+    parser.add_argument(
+        "--no-config",
+        action="store_true",
+        help="Ignore config file defaults and use CLI/default argparse values only.",
+    )
     parser.add_argument(
         "--stage",
         choices=[
@@ -27,7 +67,7 @@ def parse_args():
             "all-before-label",
             "all-after-label",
         ],
-        required=True,
+        default="iterate",
     )
     parser.add_argument("--rounds", type=int, default=2)
     parser.add_argument("--episodes", type=int, default=20)
@@ -61,6 +101,8 @@ def parse_args():
     parser.add_argument("--policy-seed", type=int, default=200)
     parser.add_argument("--ego-depart-min", type=float, default=0.0)
     parser.add_argument("--ego-depart-max", type=float, default=90.0)
+    parser.add_argument("--ego-depart-speed-min", type=float, default=0.0)
+    parser.add_argument("--ego-depart-speed-max", type=float, default=0.0)
     parser.add_argument("--sumo-cfg", default="scenarios/simple_arterial/simple_arterial.sumocfg")
     parser.add_argument(
         "--glosa-cfg",
@@ -77,6 +119,29 @@ def parse_args():
     parser.add_argument("--policy-checkpoint", default="runs/ppo_policy.pt")
     parser.add_argument("--round2-pool", default="runs/preference_pool_round2.jsonl")
     parser.add_argument("--plot-dir", default="runs/preference_web_plots")
+    parser.add_argument(
+        "--scenario-weights-file",
+        default=None,
+        help="Optional scenario-weight JSON file for manual label stage.",
+    )
+    parser.add_argument(
+        "--scenario-weights-dir",
+        default="runs/scenario_weights",
+        help="Directory containing per-round scenario-weight files named round{N}.json.",
+    )
+    parser.add_argument(
+        "--scene-labels-file",
+        default=None,
+        help=(
+            "Optional manual scene labels (.json/.jsonl) keyed by episode_id. "
+            "Used by preference_web before automatic scene inference."
+        ),
+    )
+    parser.add_argument(
+        "--scene-labels-strict",
+        action="store_true",
+        help="Treat episodes missing manual scene labels as unlabeled for scene-based sampling.",
+    )
     parser.add_argument("--match-mode", choices=["episode", "scene", "time", "position", "both", "random"], default="scene")
     parser.add_argument(
         "--human-source-pair-weights",
@@ -102,7 +167,15 @@ def parse_args():
     parser.add_argument("--ppo-entropy-coef", type=float, default=0.01)
     parser.add_argument("--ppo-value-coef", type=float, default=0.5)
     parser.add_argument("--skip-existing", action="store_true")
-    return parser.parse_args()
+    if config_defaults:
+        valid_dests = {action.dest for action in parser._actions}
+        unknown_keys = sorted(set(config_defaults) - valid_dests)
+        if unknown_keys:
+            raise KeyError(
+                f"Unknown config keys in {bootstrap_args.config}: {', '.join(unknown_keys)}"
+            )
+        parser.set_defaults(**config_defaults)
+    return parser.parse_args(argv)
 
 
 def exists(path: str) -> bool:
@@ -151,6 +224,10 @@ def collect(args):
                 str(args.ego_depart_min),
                 "--ego-depart-max",
                 str(args.ego_depart_max),
+                "--ego-depart-speed-min",
+                str(args.ego_depart_speed_min),
+                "--ego-depart-speed-max",
+                str(args.ego_depart_speed_max),
                 "--overwrite",
                 "--output",
                 args.expert_segments,
@@ -181,6 +258,10 @@ def collect(args):
                 str(args.ego_depart_min),
                 "--ego-depart-max",
                 str(args.ego_depart_max),
+                "--ego-depart-speed-min",
+                str(args.ego_depart_speed_min),
+                "--ego-depart-speed-max",
+                str(args.ego_depart_speed_max),
                 "--output",
                 args.expert_segments,
                 "--fcd-output-dir",
@@ -208,6 +289,10 @@ def collect(args):
             str(args.ego_depart_min),
             "--ego-depart-max",
             str(args.ego_depart_max),
+            "--ego-depart-speed-min",
+            str(args.ego_depart_speed_min),
+            "--ego-depart-speed-max",
+            str(args.ego_depart_speed_max),
             "--output",
             args.random_segments,
             "--fcd-output-dir",
@@ -233,7 +318,13 @@ def collect(args):
     )
 
 
-def label(args, preference_pool: str | None = None, preferences: str | None = None, plot_dir: str | None = None):
+def label(
+    args,
+    preference_pool: str | None = None,
+    preferences: str | None = None,
+    plot_dir: str | None = None,
+    scenario_weights_file: str | None = None,
+):
     command = [
             sys.executable,
             "preference_web.py",
@@ -253,7 +344,23 @@ def label(args, preference_pool: str | None = None, preferences: str | None = No
     ]
     if args.human_source_pair_weights:
         command.extend(["--source-pair-weights", args.human_source_pair_weights])
+    weights_file = scenario_weights_file or args.scenario_weights_file
+    if weights_file:
+        command.extend(["--scenario-weights-file", weights_file])
+    if args.scene_labels_file:
+        command.extend(["--scene-labels-file", args.scene_labels_file])
+    if args.scene_labels_strict:
+        command.append("--scene-labels-strict")
     run(command)
+
+
+def round_scenario_weights_file(args, round_idx: int) -> str | None:
+    if args.scenario_weights_file:
+        return args.scenario_weights_file
+    candidate = Path(args.scenario_weights_dir) / f"round{round_idx}.json"
+    if candidate.exists():
+        return str(candidate)
+    return None
 
 
 def reward(
@@ -343,6 +450,10 @@ def policy(
             str(args.ego_depart_min),
             "--ego-depart-max",
             str(args.ego_depart_max),
+            "--ego-depart-speed-min",
+            str(args.ego_depart_speed_min),
+            "--ego-depart-speed-max",
+            str(args.ego_depart_speed_max),
             "--reward-checkpoint",
             reward_model or args.reward_model,
             "--ppo-learning-rate",
@@ -418,9 +529,18 @@ def iterate(args):
         policy_checkpoint = f"runs/ppo_policy_round{round_idx}.pt"
         plot_dir = f"runs/preference_web_plots_round{round_idx}"
         next_pool = f"runs/preference_pool_round{round_idx + 1}.jsonl"
+        scenario_file = round_scenario_weights_file(args, round_idx)
 
         print(f"\n=== RLHF round {round_idx}/{args.rounds} ===", flush=True)
-        label(args, preference_pool=current_pool, preferences=preferences, plot_dir=plot_dir)
+        if scenario_file:
+            print(f"using scenario weights: {scenario_file}", flush=True)
+        label(
+            args,
+            preference_pool=current_pool,
+            preferences=preferences,
+            plot_dir=plot_dir,
+            scenario_weights_file=scenario_file,
+        )
         reward(
             args,
             preference_pool=current_pool,

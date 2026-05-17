@@ -1,0 +1,22 @@
+Thesis:
+Data selection is a controllable training-distribution design problem: methods differ mostly in how they score data and how they act on those scores.
+
+Audience:
+Students in an LLM/RLHF-related course.
+
+One-line arc:
+Define the common method grammar, walk the pretraining pipeline from cheap filters to expensive weighting, then show how the same grammar changes in instruction tuning and alignment.
+
+Slide list:
+1. Data selection methods control the training distribution. Proof: method map.
+2. Every method has the same two-part grammar. Proof: utility plus selection mechanism diagram.
+3. The taxonomy explains why similar filters behave differently. Proof: 2x3 taxonomy matrix.
+4. Pretraining pipelines run from broad, cheap filters to targeted, expensive filters. Proof: staged pipeline.
+5. Heuristics are fast distribution assumptions, not truth detectors. Proof: heuristic families table.
+6. Quality and domain filters estimate closeness to a target distribution. Proof: classifier/perplexity/ratio diagram.
+7. Deduplication trades redundancy for coverage and lower memorization risk. Proof: exact/near/semantic ladder.
+8. Safety and multilingual filters are necessary but shift the data distribution. Proof: gate-and-risk layout.
+9. Data mixing converts source domains into sampling weights. Proof: mixture weight diagram.
+10. Instruction-tuning selection shifts from filtering text to diversifying tasks and responses. Proof: task diversity flow.
+11. Alignment data selection is reward-guided but under-specified. Proof: preference data selection loop.
+12. A practical recipe starts with the target distribution, then chooses the cheapest sufficient utility. Proof: decision checklist.

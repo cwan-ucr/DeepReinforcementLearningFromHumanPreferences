@@ -1,7 +1,7 @@
 <routes>
-    <vType id="human" accel="2.0" decel="4.5" sigma="0.5" length="5.0"
+    <vType id="human" accel="2.0" decel="3.0" sigma="0.5" length="5.0"
            minGap="2.5" maxSpeed="13.89" speedFactor="1.0" carFollowModel="Krauss"/>
-    <vType id="ego_type" accel="2.0" decel="4.5" sigma="0.0" length="5.0"
+    <vType id="ego_type" accel="2.0" decel="3.0" sigma="0.0" length="5.0"
            minGap="2.5" maxSpeed="13.89" speedFactor="1.0" carFollowModel="Krauss">
     </vType>
 

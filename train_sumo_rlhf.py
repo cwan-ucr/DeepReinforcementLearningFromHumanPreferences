@@ -41,6 +41,8 @@ def parse_args():
     parser.add_argument("--fcd-output-dir", default="runs/fcd")
     parser.add_argument("--ego-depart-min", type=float, default=0.0)
     parser.add_argument("--ego-depart-max", type=float, default=90.0)
+    parser.add_argument("--ego-depart-speed-min", type=float, default=0.0)
+    parser.add_argument("--ego-depart-speed-max", type=float, default=0.0)
     parser.add_argument("--reward-checkpoint", default=None)
     parser.add_argument("--policy-checkpoint-in", default=None)
     parser.add_argument("--policy-checkpoint-out", default=None)
@@ -92,6 +94,8 @@ def main():
             ego_type_id="ego_type",
             ego_depart_min=args.ego_depart_min,
             ego_depart_max=args.ego_depart_max,
+            ego_depart_speed_min=args.ego_depart_speed_min,
+            ego_depart_speed_max=args.ego_depart_speed_max,
         )
     )
     agent = PPOAgent(
@@ -234,13 +238,19 @@ def main():
                     if episode_steps
                     else float("nan")
                 )
+                depart_speed = (
+                    float(episode_steps[0].info.get("ego_depart_speed"))
+                    if episode_steps
+                    else float("nan")
+                )
                 print(
                     f"episode={episode} rollout={rollout_index} "
                     f"steps={len(episode_steps)} "
                     f"learned_reward={total_reward:.3f} "
                     f"{update_text}"
                     f"seed={episode_steps[0].info.get('sumo_seed') if episode_steps else None} "
-                    f"depart={depart_time:.1f}"
+                    f"depart={depart_time:.1f} "
+                    f"depart_speed={depart_speed:.2f}"
                 )
     finally:
         env.close()

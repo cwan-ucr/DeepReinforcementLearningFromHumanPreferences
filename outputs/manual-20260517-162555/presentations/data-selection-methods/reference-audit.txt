@@ -1,0 +1,7 @@
+No source/reference deck was supplied. The deck is created from the paper and the user's LaTeX requirements.
+
+Quality target:
+- Standalone classroom section deck.
+- English slide text for presentation.
+- One method claim per slide.
+- Visual method diagrams rather than dense prose.

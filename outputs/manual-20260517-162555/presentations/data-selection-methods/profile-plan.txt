@@ -1,0 +1,8 @@
+task mode: create
+primary deck-profile: engineering-platform
+secondary profile gates: academic presentation clarity
+required proof objects: unified method framework, taxonomy matrix, pretraining pipeline, method tradeoff table, data mixing diagram, alignment selection flow
+source/asset requirements: local PDF /Users/yyan/Downloads/2402.16827v3.pdf and user-provided presentation requirements
+brand authenticity constraints: no logos or identity assets used
+profile-specific QA gates: diagrams must preserve technical labels while remaining readable for classroom presentation
+known missing inputs: no team template provided, so the deck is standalone

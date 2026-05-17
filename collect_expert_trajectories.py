@@ -33,6 +33,8 @@ def parse_args():
     parser.add_argument("--fcd-output-dir", default="runs/fcd")
     parser.add_argument("--ego-depart-min", type=float, default=0.0)
     parser.add_argument("--ego-depart-max", type=float, default=90.0)
+    parser.add_argument("--ego-depart-speed-min", type=float, default=0.0)
+    parser.add_argument("--ego-depart-speed-max", type=float, default=0.0)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument(
         "--fixed-seed",
@@ -63,6 +65,8 @@ def main():
             ego_type_id="ego_glosa_type" if args.expert_type == "glosa" else "ego_type",
             ego_depart_min=args.ego_depart_min,
             ego_depart_max=args.ego_depart_max,
+            ego_depart_speed_min=args.ego_depart_speed_min,
+            ego_depart_speed_max=args.ego_depart_speed_max,
         )
     )
 
@@ -107,10 +111,15 @@ def main():
                 if episode_steps
                 else float("nan")
             )
+            depart_speed = (
+                float(episode_steps[0].info.get("ego_depart_speed"))
+                if episode_steps
+                else float("nan")
+            )
             print(
                 f"expert={args.expert_type} episode={episode} "
                 f"steps={len(episode_steps)} seed={episode_steps[0].info.get('sumo_seed') if episode_steps else None} "
-                f"depart={depart_time:.1f}"
+                f"depart={depart_time:.1f} depart_speed={depart_speed:.2f}"
             )
     finally:
         env.close()

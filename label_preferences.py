@@ -23,7 +23,7 @@ def parse_args():
     parser.add_argument("--segments", default="runs/sumo_segments.jsonl")
     parser.add_argument("--output", default="runs/preferences.jsonl")
     parser.add_argument("--plot-dir", default="runs/preference_plots")
-    parser.add_argument("--pairs", type=int, default=20)
+    parser.add_argument("--pairs", type=int, default=100)
     parser.add_argument("--match-position-tol", type=float, default=30.0)
     parser.add_argument("--match-time-tol", type=float, default=20.0)
     parser.add_argument(

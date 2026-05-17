@@ -1,0 +1,12 @@
+Slide size: 1280x720.
+Background: warm off-white paper with occasional deep ink bands.
+Typography: Aptos Display for claims, Aptos for labels/body, Aptos Mono for formulas.
+Palette: ink #111827, muted #5F6B7A, paper #F6F0E6, chalk #FFFDF8, teal #1F6B67, orange #C46A2C, blue #315C9A, red #A33A2B, gold #B9933B, line #D9D0C3.
+Chart grammar: authored editable primitives, direct labels, no legends unless needed.
+Diagram grammar: left-to-right flows, thin rules, restrained filled method blocks.
+Connector grammar: use arrows only when direction matters; otherwise use rules and spacing.
+Container grammar: boxes imply method stages, families, or tradeoffs only.
+Footer grammar: quiet source line at bottom-left and page marker at bottom-right.
+Kicker grammar: uppercase section marker, fixed row geometry.
+Allowed layout families: cover map, framework split, taxonomy matrix, horizontal pipeline, comparison table, method ladder, gate/risk split, weight diagram, flow loop, checklist.
+Banned motifs: generic card grids, decorative gradients, fake logos, heavy icons, dense paragraph pages.

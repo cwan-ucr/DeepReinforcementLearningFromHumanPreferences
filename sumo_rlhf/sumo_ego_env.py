@@ -59,7 +59,8 @@ class SumoEgoConfig:
     ego_type_id: Optional[str] = None
     ego_depart_min: float = 0.0
     ego_depart_max: float = 90.0
-    ego_depart_speed: float = 0.0
+    ego_depart_speed_min: float = 0.0
+    ego_depart_speed_max: float = 0.0
 
 
 class SumoEgoEnv(gym.Env):
@@ -86,6 +87,7 @@ class SumoEgoEnv(gym.Env):
         self._fcd_episode_index = 0
         self._current_fcd_path: Optional[Path] = None
         self._ego_depart_time = 0.0
+        self._ego_depart_speed = 0.0
         self._prev_action = 0.0
         self._last_obs = np.zeros(10, dtype=np.float32)
 
@@ -157,8 +159,10 @@ class SumoEgoEnv(gym.Env):
             raise RuntimeError("Call reset() before passive_step().")
 
         old_speed = 0.0
+        speed_limits = None
         if self.config.ego_id in self._traci.vehicle.getIDList():
             old_speed = float(self._traci.vehicle.getSpeed(self.config.ego_id))
+            speed_limits = self._compute_speed_limits()
 
         self._traci.simulationStep()
         self._steps += 1
@@ -179,6 +183,21 @@ class SumoEgoEnv(gym.Env):
         self._last_obs = obs.copy()
         info = {
             **self._current_info(actual_accel, arrived),
+            "safe_ref_speed": (
+                float(speed_limits["speed_cap"])
+                if speed_limits is not None
+                else float("nan")
+            ),
+            "min_safe_accel": (
+                float(speed_limits["min_allowed_accel"])
+                if speed_limits is not None
+                else float("nan")
+            ),
+            "max_safe_accel": (
+                float(speed_limits["max_allowed_accel"])
+                if speed_limits is not None
+                else float("nan")
+            ),
             "timeout": timeout,
         }
         return obs, 0.0, done, info
@@ -256,6 +275,11 @@ class SumoEgoEnv(gym.Env):
         if depart_max < depart_min:
             raise ValueError("ego_depart_max must be >= ego_depart_min.")
         self._ego_depart_time = float(rng.uniform(depart_min, depart_max))
+        depart_speed_min = float(self.config.ego_depart_speed_min)
+        depart_speed_max = float(self.config.ego_depart_speed_max)
+        if depart_speed_max < depart_speed_min:
+            raise ValueError("ego_depart_speed_max must be >= ego_depart_speed_min.")
+        self._ego_depart_speed = float(rng.uniform(depart_speed_min, depart_speed_max))
 
         while float(self._traci.simulation.getTime()) < self._ego_depart_time:
             self._traci.simulationStep()
@@ -268,7 +292,7 @@ class SumoEgoEnv(gym.Env):
                 depart="now",
                 departLane="first",
                 departPos="base",
-                departSpeed=str(float(self.config.ego_depart_speed)),
+                departSpeed=str(float(self._ego_depart_speed)),
             )
 
         for _ in range(self.config.max_depart_delay_steps):
@@ -532,6 +556,7 @@ class SumoEgoEnv(gym.Env):
             "simulation_time": float(self._traci.simulation.getTime()),
             "sumo_seed": self._active_seed,
             "ego_depart_time": self._ego_depart_time,
+            "ego_depart_speed": self._ego_depart_speed,
             "action_accel": float(action_accel),
             **self._energy_info(arrived),
             "raw_observation": self._get_raw_observation_dict() if not arrived else {},

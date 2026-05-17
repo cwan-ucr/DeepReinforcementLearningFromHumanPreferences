@@ -1,0 +1,9 @@
+Primary source:
+- Albalak et al., "A Survey on Data Selection for Language Models", TMLR 2024, arXiv:2402.16827v3, local path /Users/yyan/Downloads/2402.16827v3.pdf.
+
+User constraints:
+- Changxin owns Methods & Techniques.
+- Time budget: 20 minutes plus 5 minutes Q&A.
+- Topic: Data Selection for LLMs.
+
+No external logos, screenshots, or identity assets are embedded.
